@@ -1,9 +1,12 @@
 import express from "express"
 import fs from 'fs'
 import path from 'path'
+import morgan from "morgan"
+
 const app = express()
 const PORT = 5000;
 
+app.use(morgan('dev'))
 app.use(express.json())
 
 app.use((req, res, next) => {
@@ -120,5 +123,3 @@ app.listen(PORT, () => {
 })
 
 
-// Using app.use() we can put our middleware to the middleware stack.
-// without calling next()  we cannot fo to next middleware.
