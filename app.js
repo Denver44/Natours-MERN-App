@@ -50,7 +50,6 @@ const getATour = (req, res) => {
         }
     })
 }
-
 const createATour = (req, res) => {
     const { body } = req
     const id = tours[tours.length - 1].id + 1;
@@ -65,7 +64,6 @@ const createATour = (req, res) => {
         })
     })
 }
-
 const updateATour = (req, res) => {
     const { body } = req
     const id = req.params.id
@@ -93,7 +91,6 @@ const updateATour = (req, res) => {
         })
     })
 }
-
 const deleteATour = (req, res) => {
     const id = req.params.id
     const tour = tours.find(el => el.id === id * 1)
@@ -115,8 +112,43 @@ const deleteATour = (req, res) => {
     })
 }
 
+const getAllUsers = (req, res) => {
+    res.status(500).json({
+        status: "error",
+        message: "route for this endpoint is not defined yet"
+    })
+}
+const createAUser = (req, res) => {
+    res.status(500).json({
+        status: "error",
+        message: "route for this endpoint is not defined yet"
+    })
+}
+const getAUser = (req, res) => {
+    res.status(500).json({
+        status: "error",
+        message: "route for this endpoint is not defined yet"
+    })
+}
+const updateAUser = (req, res) => {
+    res.status(500).json({
+        status: "error",
+        message: "route for this endpoint is not defined yet"
+    })
+}
+const deleteAUser = (req, res) => {
+    res.status(500).json({
+        status: "error",
+        message: "route for this endpoint is not defined yet"
+    })
+}
+
+
 app.route('/api/v1/tours').get(getAllTours).post(createATour)
 app.route('/api/v1/tours/:id').get(getATour).patch(updateATour).delete(deleteATour)
+
+app.route('/api/v1/users').get(getAllUsers).post(createAUser)
+app.route('/api/v1/users/:id').get(getAUser).patch(updateAUser).delete(deleteAUser)
 
 app.listen(PORT, () => {
     console.log(`server is started http://localhost:${PORT}`);
