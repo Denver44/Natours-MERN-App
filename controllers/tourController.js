@@ -6,6 +6,19 @@ const __dirname = path.resolve(path.dirname(''));
 let tours = [];
 tours = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`));
 
+const findItem = (val) => tours.find(el => el.id === val * 1)
+
+const checkId = (req, res, next, val) => {
+    const tour = findItem(val)
+    if (!tour) {
+        return res.status(404).json({
+            status: "fail",
+            message: "Invalid Id",
+        })
+    }
+    next()
+}
+
 const getAllTours = (req, res) => {
     res.status(200).json({
         status: "success",
@@ -18,21 +31,14 @@ const getAllTours = (req, res) => {
 }
 const getATour = (req, res) => {
     const { id } = req.params
-    const tour = tours.find(el => el.id === id * 1)
-
-    if (!tour) {
-        return res.status(404).json({
-            status: "fail",
-            message: "Invalid Id",
-        })
-    }
     res.status(200).json({
         status: "success",
         data: {
-            tour
+            tour: findItem(id)
         }
     })
 }
+
 const createATour = (req, res) => {
     const { body } = req
     const id = tours[tours.length - 1].id + 1;
@@ -50,15 +56,6 @@ const createATour = (req, res) => {
 const updateATour = (req, res) => {
     const { body } = req
     const id = req.params.id
-    const tour = tours.find(el => el.id === id * 1)
-
-
-    if (!tour) {
-        return res.status(404).json({
-            status: "fail",
-            message: "Invalid Id",
-        })
-    }
 
     let updatedTour = tours.find(el => el.id === id * 1)
     let filteredTour = tours.filter((el) => el.id !== id * 1)
@@ -76,14 +73,6 @@ const updateATour = (req, res) => {
 }
 const deleteATour = (req, res) => {
     const id = req.params.id
-    const tour = tours.find(el => el.id === id * 1)
-
-    if (!tour) {
-        return res.status(404).json({
-            status: "fail",
-            message: "Invalid Id",
-        })
-    }
 
     let filteredTour = tours.filter((el) => el.id !== id * 1)
     tours = [...filteredTour];
@@ -96,4 +85,4 @@ const deleteATour = (req, res) => {
 }
 
 
-export { createATour, getATour, getAllTours, deleteATour, updateATour }
+export { createATour, getATour, getAllTours, deleteATour, updateATour, checkId }
