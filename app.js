@@ -144,14 +144,26 @@ const deleteAUser = (req, res) => {
 }
 
 
-app.route('/api/v1/tours').get(getAllTours).post(createATour)
-app.route('/api/v1/tours/:id').get(getATour).patch(updateATour).delete(deleteATour)
 
-app.route('/api/v1/users').get(getAllUsers).post(createAUser)
-app.route('/api/v1/users/:id').get(getAUser).patch(updateAUser).delete(deleteAUser)
+
+
+const tourRouter = express.Router()
+const userRouter = express.Router()
+
+tourRouter.route('/').get(getAllTours).post(createATour)
+tourRouter.route('/:id').get(getATour).patch(updateATour).delete(deleteATour)
+
+userRouter.route('/').get(getAllUsers).post(createAUser)
+userRouter.route('/:id').get(getAUser).patch(updateAUser).delete(deleteAUser)
+
+// This is called Mounting a Router and the order should be like this only.
+app.use('/api/v1/tours', tourRouter)
+app.use('/api/v1/users', userRouter)
+
 
 app.listen(PORT, () => {
     console.log(`server is started http://localhost:${PORT}`);
 })
 
 
+// Here actually we have mounted router.
