@@ -6,6 +6,15 @@ const PORT = 5000;
 
 app.use(express.json())
 
+app.use((req, res, next) => {
+    console.log("Hello from Middleware 👋");
+    next();
+})
+
+app.use((req, res, next) => {
+    req.requestedTime = new Date().toISOString()
+    next();
+})
 
 const __dirname = path.resolve(path.dirname(''));
 let tours = [];
@@ -14,6 +23,7 @@ tours = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json
 const getAllTours = (req, res) => {
     res.status(200).json({
         status: "success",
+        requestedTime: req.requestedTime,
         result: tours.length,
         data: {
             tours
@@ -102,12 +112,6 @@ const deleteATour = (req, res) => {
     })
 }
 
-// app.get('/api/v1/tours', getAllTours)
-// app.get('/api/v1/tours/:id', getATour)
-// app.post('/api/v1/tours', createATour)
-// app.patch('/api/v1/tours/:id', updateATour)
-// app.delete('/api/v1/tours/:id', deleteATour)
-
 app.route('/api/v1/tours').get(getAllTours).post(createATour)
 app.route('/api/v1/tours/:id').get(getATour).patch(updateATour).delete(deleteATour)
 
@@ -115,3 +119,6 @@ app.listen(PORT, () => {
     console.log(`server is started http://localhost:${PORT}`);
 })
 
+
+// Using app.use() we can put our middleware to the middleware stack.
+// without calling next()  we cannot fo to next middleware.
