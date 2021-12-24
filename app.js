@@ -1,20 +1,20 @@
 import express from "express"
+import fs from 'fs'
+import path from 'path'
 const app = express()
 const PORT = 5000;
 
-app.get('/', (req, res) => {
+const __dirname = path.resolve(path.dirname(''));
+const tours = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`));
 
-    // res.status(200).send('Hello from Server Side') 
-    res.status(200).json({
-        message: "Hello From Server Side",
-        app: "Travel Space"
-    })
-})
 
-app.post('/', (req, res) => {
+app.get('/api/v1/tours', (req, res) => {
     res.status(200).json({
-        message: "U can create at this endPoint",
-        app: "Travel Space"
+        status: "success",
+        result: tours.length,
+        data: {
+            tours
+        }
     })
 })
 
@@ -23,5 +23,10 @@ app.listen(PORT, () => {
     console.log(`server is started http://localhost:${PORT}`);
 })
 
+// Here we have creat a version for api like V1 so that in future if we create a new version so it will not do any braking changes to our client. we can still use the old version.
 
-// Here the send method we automatically se the headers for like content type text?html and same for json it will set application/json.
+// The function where we get res and req object are called request Handler.
+
+// Always use dirname and for that we have to import path module to resolve the dirname error and get the current dir path.
+
+// They way send the response to client is mostly used in industry so use this way only to send data to client side.
