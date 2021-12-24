@@ -11,8 +11,7 @@ const __dirname = path.resolve(path.dirname(''));
 let tours = [];
 tours = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`));
 
-
-app.get('/api/v1/tours', (req, res) => {
+const getAllTours = (req, res) => {
     res.status(200).json({
         status: "success",
         result: tours.length,
@@ -20,9 +19,8 @@ app.get('/api/v1/tours', (req, res) => {
             tours
         }
     })
-})
-
-app.get('/api/v1/tours/:id', (req, res) => {
+}
+const getATour = (req, res) => {
     const { id } = req.params
     const tour = tours.find(el => el.id === id * 1)
 
@@ -38,10 +36,9 @@ app.get('/api/v1/tours/:id', (req, res) => {
             tour
         }
     })
+}
 
-})
-
-app.post('/api/v1/tours', (req, res) => {
+const createATour = (req, res) => {
     const { body } = req
     const id = tours[tours.length - 1].id + 1;
     const tour = { ...body, id }
@@ -54,9 +51,9 @@ app.post('/api/v1/tours', (req, res) => {
             }
         })
     })
-})
+}
 
-app.patch('/api/v1/tours/:id', (req, res) => {
+const updateATour = (req, res) => {
     const { body } = req
     const id = req.params.id
     const tour = tours.find(el => el.id === id * 1)
@@ -82,9 +79,9 @@ app.patch('/api/v1/tours/:id', (req, res) => {
             }
         })
     })
-})
+}
 
-app.delete('/api/v1/tours/:id', (req, res) => {
+const deleteATour = (req, res) => {
     const id = req.params.id
     const tour = tours.find(el => el.id === id * 1)
 
@@ -103,7 +100,16 @@ app.delete('/api/v1/tours/:id', (req, res) => {
             status: "success"
         })
     })
-})
+}
+
+// app.get('/api/v1/tours', getAllTours)
+// app.get('/api/v1/tours/:id', getATour)
+// app.post('/api/v1/tours', createATour)
+// app.patch('/api/v1/tours/:id', updateATour)
+// app.delete('/api/v1/tours/:id', deleteATour)
+
+app.route('/api/v1/tours').get(getAllTours).post(createATour)
+app.route('/api/v1/tours/:id').get(getATour).patch(updateATour).delete(deleteATour)
 
 app.listen(PORT, () => {
     console.log(`server is started http://localhost:${PORT}`);
