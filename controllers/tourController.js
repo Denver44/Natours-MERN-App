@@ -18,6 +18,16 @@ const checkId = (req, res, next, val) => {
     }
     next()
 }
+const checkBody = (req, res, next, val) => {
+    const { body } = req;
+    if (!body.name || !body.price) {
+        return res.status(400).json({
+            status: "fail",
+            message: "name or price property missing",
+        })
+    }
+    next()
+}
 
 const getAllTours = (req, res) => {
     res.status(200).json({
@@ -85,4 +95,4 @@ const deleteATour = (req, res) => {
 }
 
 
-export { createATour, getATour, getAllTours, deleteATour, updateATour, checkId }
+export { createATour, getATour, getAllTours, deleteATour, updateATour, checkId, checkBody }
