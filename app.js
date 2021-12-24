@@ -59,8 +59,10 @@ app.post('/api/v1/tours', (req, res) => {
 app.patch('/api/v1/tours/:id', (req, res) => {
     const { body } = req
     const id = req.params.id
+    const tour = tours.find(el => el.id === id * 1)
 
-    if (id * 1 > tours.length) {
+
+    if (!tour) {
         return res.status(404).json({
             status: "fail",
             message: "Invalid Id",
@@ -78,6 +80,27 @@ app.patch('/api/v1/tours/:id', (req, res) => {
             data: {
                 tour: updatedTour
             }
+        })
+    })
+})
+
+app.delete('/api/v1/tours/:id', (req, res) => {
+    const id = req.params.id
+    const tour = tours.find(el => el.id === id * 1)
+
+    if (!tour) {
+        return res.status(404).json({
+            status: "fail",
+            message: "Invalid Id",
+        })
+    }
+
+    let filteredTour = tours.filter((el) => el.id !== id * 1)
+    tours = [...filteredTour];
+
+    fs.writeFile(`${__dirname}/dev-data/data/tours-simple.json`, JSON.stringify(tours), err => {
+        res.status(204).json({
+            status: "success"
         })
     })
 })
