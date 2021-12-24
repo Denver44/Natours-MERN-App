@@ -4,7 +4,7 @@ import path from 'path'
 const app = express()
 const PORT = 5000;
 
-app.use(express.json()) // This is actually the middleware which actually help us to get the data from req now the data from req will be added to the body of req and then we can get the data in req object.
+app.use(express.json())
 
 
 const __dirname = path.resolve(path.dirname(''));
@@ -20,6 +20,25 @@ app.get('/api/v1/tours', (req, res) => {
             tours
         }
     })
+})
+
+app.get('/api/v1/tours/:id', (req, res) => {
+    const { id } = req.params
+    const tour = tours.find(el => el.id === id * 1)
+
+    if (!tour) {
+        return res.status(404).json({
+            status: "fail",
+            message: "Invalid Id",
+        })
+    }
+    res.status(200).json({
+        status: "success",
+        data: {
+            tour
+        }
+    })
+
 })
 
 app.post('/api/v1/tours', (req, res) => {
@@ -41,5 +60,5 @@ app.listen(PORT, () => {
     console.log(`server is started http://localhost:${PORT}`);
 })
 
-
-// We have to call always async functions when we are saving data under a request handler.
+// all request parameter will be get in req.params
+// /api/v1/tours/:id/:y? this way we can the optional params.
