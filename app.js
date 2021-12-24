@@ -56,9 +56,33 @@ app.post('/api/v1/tours', (req, res) => {
     })
 })
 
+app.patch('/api/v1/tours/:id', (req, res) => {
+    const { body } = req
+    const id = req.params.id
+
+    if (id * 1 > tours.length) {
+        return res.status(404).json({
+            status: "fail",
+            message: "Invalid Id",
+        })
+    }
+
+    let updatedTour = tours.find(el => el.id === id * 1)
+    let filteredTour = tours.filter((el) => el.id !== id * 1)
+    updatedTour = { id: id * 1, ...body }
+    tours = [...filteredTour, updatedTour];
+
+    fs.writeFile(`${__dirname}/dev-data/data/tours-simple.json`, JSON.stringify(tours), err => {
+        res.status(200).json({
+            status: "updated",
+            data: {
+                tour: updatedTour
+            }
+        })
+    })
+})
+
 app.listen(PORT, () => {
     console.log(`server is started http://localhost:${PORT}`);
 })
 
-// all request parameter will be get in req.params
-// /api/v1/tours/:id/:y? this way we can the optional params.
