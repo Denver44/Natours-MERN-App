@@ -2,7 +2,15 @@ import Tour from '../models/tourModel.js';
 
 const getAllTours = async (req, res) => {
   try {
-    const tours = await Tour.find();
+    const queryObj = { ...req.query }; // Making a Deep copy here we take out all fields and create a new object and then assign to queryObj
+    const excludedFields = ['page', 'sort', 'fields', 'limit'];
+    excludedFields.forEach((el) => delete queryObj[el]);
+
+    // Building Query
+    const tourQuery = Tour.find(queryObj);
+
+    // Executing Query
+    const tours = await tourQuery;
     res.status(200).json({
       status: 'success',
       result: tours.length,
@@ -97,3 +105,17 @@ const deleteATour = async (req, res) => {
 };
 
 export { createATour, getATour, getAllTours, deleteATour, updateATour };
+
+/*
+
+1st way of doing query, but this method is more feasible
+Tour.find({duration : 5 , difficult : easy});
+
+2nd Way of doing query
+
+Tour.find().where("duration").equals(5).where("difficult").equals(easy)
+Tour.find().where("duration").gte(5).where("difficult").equals(easy).price.lte(500)
+Tour.find().where("duration").sort(1)
+Tour.find().where("duration").sort(-1)
+
+*/
