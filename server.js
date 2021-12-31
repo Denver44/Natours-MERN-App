@@ -2,13 +2,11 @@ import app from './app.js';
 import mongoose from 'mongoose';
 const PORT = process.env.NODE_ENV === 'development' ? process.env.PORT : 3000;
 
-// Connecting mongoose with our DB
 const DB = process.env.DATABASE.replace(
   '<PASSWORD>',
   process.env.DATABASE_PASSWORD
 );
 
-//   Hosted Connection
 mongoose
   .connect(DB)
   .then((con) => {
@@ -17,26 +15,52 @@ mongoose
   })
   .catch((e) => console.log(e));
 
-//   Local Connection
-// mongoose
-//   .connect(process.env.DATABASE_LOCAL)
-//   .then((con) => {
-//     console.log(con.connection);
-//     console.log('Local DB connection successful');
-//   })
-//   .catch((e) => console.log(e));
+const tourSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: [true, 'A Tour Must have a name'],
+    unique: true,
+  },
+  rating: {
+    type: Number,
+    default: 4.5,
+  },
+  price: {
+    type: String,
+    required: [true, 'A Tour Must have a price'],
+  },
+});
+
+const Tour = mongoose.model('Tour', tourSchema);
 
 app.listen(PORT, () => {
   console.log(`server is started http://localhost:${PORT}`);
 });
 
 /*
-This options are for deprecation warning
-    usedNewURLParser: true,
-    useCreateIndex: true,
-    useFindAndModify: true,
+Basic Way
+  name: String
+  rating: Number,
+  price: Number,
 
-    IMPORTANT NOTE:-
-useNewUrlParser, useUnifiedTopology, useFindAndModify, and useCreateIndex are no longer supported options. Mongoose 6 always behaves as if useNewUrlParser, useUnifiedTopology, and useCreateIndex are true, and useFindAndModify is false. Please remove these options from your code.
+Detailed Way by defining Schema Types Options
+ name: {
+    type: String,
+    required: [true, 'A Tour Must have a name'], // Here if required failed then we will get the error A Tour Must have a name
+    unique: true,
+  },
+  rating: {
+    type: Number,
+    default: 4.5, // This way we can Set Default Value
+  },
+  price: {
+    type: String,
+    required: [true, 'A Tour Must have a price'],
+  },
 
+
+
+  To Create a Model
+  const Tour = mongoose.model('Tour', tourSchema);
+  1. Make first letter Capital and and in mongoose.model(ModelName, SchemaName)
 */
