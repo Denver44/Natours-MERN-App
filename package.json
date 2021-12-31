@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "nodemon server.js",
+    "start:import": "node seeding/import-dev-data.js",
     "start:prod": "SET NODE_ENV=production& nodemon server.js"
   },
   "keywords": [],
