@@ -2,12 +2,21 @@ import Tour from '../models/tourModel.js';
 
 const getAllTours = async (req, res) => {
   try {
-    const queryObj = { ...req.query }; // Making a Deep copy here we take out all fields and create a new object and then assign to queryObj
+    const queryObj = { ...req.query };
+    // Building Query
+
+    // 1 Filtering
     const excludedFields = ['page', 'sort', 'fields', 'limit'];
     excludedFields.forEach((el) => delete queryObj[el]);
 
-    // Building Query
-    const tourQuery = Tour.find(queryObj);
+    // 2 Advanced Filtering
+    let queryStr = JSON.stringify(queryObj);
+
+    queryStr = queryStr.replace(/\b(gte|lte|lt|gt)\b/g, (match) => `$${match}`); // Here /b means exacts words and /g means there can be multiple words like gte can be twice or thrice or lte is also there
+    queryStr = JSON.parse(queryStr);
+
+    console.log('New str', queryStr);
+    const tourQuery = Tour.find(queryStr);
 
     // Executing Query
     const tours = await tourQuery;
