@@ -20,15 +20,25 @@ const getATour = (req, res) => {
   //   });
 };
 
-const createATour = (req, res) => {
-  const { body } = req;
-  res.status(201).json({
-    status: 'created',
-    // data: {
-    //   tour,
-    // },
-  });
+const createATour = async (req, res) => {
+  try {
+    const { body } = req;
+    const newTour = await Tour.create(body);
+
+    res.status(201).json({
+      status: 'created',
+      data: {
+        tour: newTour,
+      },
+    });
+  } catch (e) {
+    res.status(400).json({
+      status: 'fail',
+      message: 'Invalid data sent',
+    });
+  }
 };
+
 const updateATour = (req, res) => {
   const { body } = req;
   const id = req.params.id;
@@ -48,3 +58,14 @@ const deleteATour = (req, res) => {
 };
 
 export { createATour, getATour, getAllTours, deleteATour, updateATour };
+
+/*
+
+Old Way
+const newTour = new Tour(body)
+newTour.save()
+
+Easiest Way
+const newTour = await Tour.create(body);
+Right now we are calling directly create method so it will create and save document for us and it will return a promise
+*/
