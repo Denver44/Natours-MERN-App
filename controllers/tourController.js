@@ -25,6 +25,14 @@ const getAllTours = async (req, res) => {
       tourQuery = tourQuery.sort('-createdAt'); // As by default we want our latest post to be first
     }
 
+    //4. Limiting
+    if (req.query.fields) {
+      const tourLimitQuery = spiltHelper(req.query.fields, ',', ' ');
+      tourQuery = tourQuery.select(tourLimitQuery);
+    } else {
+      tourQuery = tourQuery.select('-__v');
+    }
+
     // Executing Query
     const tours = await tourQuery;
     res.status(200).json({

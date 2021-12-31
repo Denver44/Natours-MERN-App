@@ -50,6 +50,7 @@ const tourSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now(),
+    select: false, //  This way we exclude it so no it will be not send as response to client
   },
   startDates: [Date],
 });
