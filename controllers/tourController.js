@@ -1,18 +1,5 @@
 import Tour from '../models/tourModel.js';
 
-const findItem = (tours, val) => tours.find((el) => el.id === val * 1);
-
-const checkBody = (req, res, next, val) => {
-  const { body } = req;
-  if (!body.name || !body.price) {
-    return res.status(400).json({
-      status: 'fail',
-      message: 'name or price property missing',
-    });
-  }
-  next();
-};
-
 const getAllTours = (req, res) => {
   res.status(200).json({
     status: 'success',
@@ -60,11 +47,4 @@ const deleteATour = (req, res) => {
   });
 };
 
-export {
-  createATour,
-  getATour,
-  getAllTours,
-  deleteATour,
-  updateATour,
-  checkBody,
-};
+export { createATour, getATour, getAllTours, deleteATour, updateATour };
