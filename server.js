@@ -10,7 +10,6 @@ const DB = process.env.DATABASE.replace(
 mongoose
   .connect(DB)
   .then((con) => {
-    console.log(con.connection);
     console.log('Remote DB connection successful');
   })
   .catch((e) => console.log(e));
@@ -33,34 +32,28 @@ const tourSchema = new mongoose.Schema({
 
 const Tour = mongoose.model('Tour', tourSchema);
 
+const testTour = new Tour({
+  name: 'Mountain Hiker Blaster',
+  price: 497,
+});
+
+testTour
+  .save()
+  .then((doc) => console.log(doc))
+  .catch((e) => console.log(e.message));
+
 app.listen(PORT, () => {
   console.log(`server is started http://localhost:${PORT}`);
 });
 
 /*
-Basic Way
-  name: String
-  rating: Number,
-  price: Number,
+const testTour = new Tour({
+  name: 'Forest hiker',
+  rating: 4.7,
+  price: 497,
+});
 
-Detailed Way by defining Schema Types Options
- name: {
-    type: String,
-    required: [true, 'A Tour Must have a name'], // Here if required failed then we will get the error A Tour Must have a name
-    unique: true,
-  },
-  rating: {
-    type: Number,
-    default: 4.5, // This way we can Set Default Value
-  },
-  price: {
-    type: String,
-    required: [true, 'A Tour Must have a price'],
-  },
+1. This is a new document which we created from our tour model.
+2. It is same like Classes and Object in JS we create object from class constructor, here also not exactly same but the analogy will help us to related and understand .
 
-
-
-  To Create a Model
-  const Tour = mongoose.model('Tour', tourSchema);
-  1. Make first letter Capital and and in mongoose.model(ModelName, SchemaName)
 */
