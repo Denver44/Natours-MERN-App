@@ -1,10 +1,17 @@
-import express from "express"
-import { getATour, getAllTours, createATour, updateATour, deleteATour, checkId, checkBody } from '../controllers/tourController.js'
+import express from 'express';
+import {
+  getATour,
+  getAllTours,
+  createATour,
+  updateATour,
+  deleteATour,
+  checkBody,
+} from '../controllers/tourController.js';
 
-const router = express.Router()
-router.param('id', checkId)
+const router = express.Router();
+// router.param('id');
 
-router.route('/').get(getAllTours).post(checkBody, createATour)
-router.route('/:id').get(getATour).patch(updateATour).delete(deleteATour)
+router.route('/').get(getAllTours).post(checkBody, createATour);
+router.route('/:id').get(getATour).patch(updateATour).delete(deleteATour);
 
-export default router
+export default router;
