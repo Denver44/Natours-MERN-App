@@ -1,4 +1,5 @@
 import Tour from '../models/tourModel.js';
+import { spiltHelper } from '../utils/helper.js';
 
 const getAllTours = async (req, res) => {
   try {
@@ -12,11 +13,17 @@ const getAllTours = async (req, res) => {
     // 2 Advanced Filtering
     let queryStr = JSON.stringify(queryObj);
 
-    queryStr = queryStr.replace(/\b(gte|lte|lt|gt)\b/g, (match) => `$${match}`); // Here /b means exacts words and /g means there can be multiple words like gte can be twice or thrice or lte is also there
-    queryStr = JSON.parse(queryStr);
+    queryStr = queryStr.replace(/\b(gte|lte|lt|gt)\b/g, (match) => `$${match}`);
 
-    console.log('New str', queryStr);
-    const tourQuery = Tour.find(queryStr);
+    let tourQuery = Tour.find(JSON.parse(queryStr));
+
+    //3. Sorting
+    if (req.query.sort) {
+      const tourSortQuery = spiltHelper(req.query.sort, ',', ' ');
+      tourQuery = tourQuery.sort(tourSortQuery);
+    } else {
+      tourQuery = tourQuery.sort('-createdAt'); // As by default we want our latest post to be first
+    }
 
     // Executing Query
     const tours = await tourQuery;
