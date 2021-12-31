@@ -30,8 +30,16 @@ const getAllTours = async (req, res) => {
       const tourLimitQuery = spiltHelper(req.query.fields, ',', ' ');
       tourQuery = tourQuery.select(tourLimitQuery);
     } else {
-      tourQuery = tourQuery.select('-__v');
+      tourQuery = tourQuery.select('__v');
     }
+
+    //5. Pagination
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 100;
+    const skip = (page - 1) * limit;
+    console.log('skip page limit', skip, page, limit);
+
+    tourQuery = tourQuery.skip(skip).limit(limit);
 
     // Executing Query
     const tours = await tourQuery;
