@@ -1,23 +1,40 @@
 import Tour from '../models/tourModel.js';
 
-const getAllTours = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    requestedTime: req.requestedTime,
-    // result: tours.length,
-    // data: {
-    //   tours,
-    // },
-  });
+const getAllTours = async (req, res) => {
+  try {
+    const tours = await Tour.find();
+    res.status(200).json({
+      status: 'success',
+      result: tours.length,
+      data: {
+        tours,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
 };
-const getATour = (req, res) => {
-  const { id } = req.params;
-  //   res.status(200).json({
-  //     status: 'success',
-  //     data: {
-  //       tour: findItem(id),
-  //     },
-  //   });
+const getATour = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const aTour = await Tour.findById(id);
+    // const aTour = await Tour.findOne({ _id: id });
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        tour: aTour,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
 };
 
 const createATour = async (req, res) => {
@@ -58,14 +75,3 @@ const deleteATour = (req, res) => {
 };
 
 export { createATour, getATour, getAllTours, deleteATour, updateATour };
-
-/*
-
-Old Way
-const newTour = new Tour(body)
-newTour.save()
-
-Easiest Way
-const newTour = await Tour.create(body);
-Right now we are calling directly create method so it will create and save document for us and it will return a promise
-*/
