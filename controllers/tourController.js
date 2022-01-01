@@ -1,6 +1,13 @@
 import Tour from '../models/tourModel.js';
 import { spiltHelper } from '../utils/helper.js';
 
+const aliasTopTours = (req, res, next) => {
+  req.query.limit = '5';
+  req.query.sort = '-ratingsAverage,price';
+  req.query.fields = '-_id,name,price,ratingsAverage,summary,difficulty';
+  next();
+};
+
 const getAllTours = async (req, res) => {
   try {
     const queryObj = { ...req.query };
@@ -136,18 +143,11 @@ const deleteATour = async (req, res) => {
   }
 };
 
-export { createATour, getATour, getAllTours, deleteATour, updateATour };
-
-/*
-
-1st way of doing query, but this method is more feasible
-Tour.find({duration : 5 , difficult : easy});
-
-2nd Way of doing query
-
-Tour.find().where("duration").equals(5).where("difficult").equals(easy)
-Tour.find().where("duration").gte(5).where("difficult").equals(easy).price.lte(500)
-Tour.find().where("duration").sort(1)
-Tour.find().where("duration").sort(-1)
-
-*/
+export {
+  createATour,
+  getATour,
+  getAllTours,
+  deleteATour,
+  updateATour,
+  aliasTopTours,
+};
