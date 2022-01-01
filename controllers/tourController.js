@@ -5,9 +5,9 @@ const getAllTours = async (req, res) => {
   try {
     const tourFeatures = new APIFeatures(Tour.find(), req.query)
       .filter()
-      .sort()
+      .paginate()
       .limitFields()
-      .paginate();
+      .sort();
 
     const tours = await tourFeatures.query;
     res.status(200).json({
