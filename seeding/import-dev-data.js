@@ -13,7 +13,7 @@ const DB = process.env.DATABASE?.replace(
 
 mongoose
   .connect(DB)
-  .then((con) => {
+  .then(() => {
     console.log('Remote DB connection successful');
   })
   .catch((e) => console.log(e));

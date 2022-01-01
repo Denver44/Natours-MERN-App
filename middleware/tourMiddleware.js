@@ -5,4 +5,5 @@ const aliasTopTours = (req, res, next) => {
   next();
 };
 
+// eslint-disable-next-line import/prefer-default-export
 export { aliasTopTours };

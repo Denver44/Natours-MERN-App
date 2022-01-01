@@ -65,7 +65,7 @@ const createATour = async (req, res) => {
 const updateATour = async (req, res) => {
   try {
     const { body } = req;
-    const id = req.params.id;
+    const { id } = req.params;
     const tour = await Tour.findByIdAndUpdate(id, body, {
       new: true,
       runValidators: true,

@@ -1,5 +1,6 @@
-import app from './app.js';
 import mongoose from 'mongoose';
+import app from './app.js';
+
 const PORT = process.env.NODE_ENV === 'development' ? process.env.PORT : 3000;
 
 const DB = process.env.DATABASE.replace(
@@ -9,6 +10,7 @@ const DB = process.env.DATABASE.replace(
 
 mongoose
   .connect(DB)
+  // eslint-disable-next-line no-unused-vars
   .then((con) => {
     console.log('Remote DB connection successful');
   })
