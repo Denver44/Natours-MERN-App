@@ -1,55 +1,15 @@
 import Tour from '../models/tourModel.js';
-import { spiltHelper } from '../utils/helper.js';
-
-const aliasTopTours = (req, res, next) => {
-  req.query.limit = '5';
-  req.query.sort = '-ratingsAverage,price';
-  req.query.fields = '-_id,name,price,ratingsAverage,summary,difficulty';
-  next();
-};
+import APIFeatures from '../utils/apiFeature.js';
 
 const getAllTours = async (req, res) => {
   try {
-    const queryObj = { ...req.query };
-    // Building Query
+    const tourFeatures = new APIFeatures(Tour.find(), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
 
-    // 1 Filtering
-    const excludedFields = ['page', 'sort', 'fields', 'limit'];
-    excludedFields.forEach((el) => delete queryObj[el]);
-
-    // 2 Advanced Filtering
-    let queryStr = JSON.stringify(queryObj);
-
-    queryStr = queryStr.replace(/\b(gte|lte|lt|gt)\b/g, (match) => `$${match}`);
-
-    let tourQuery = Tour.find(JSON.parse(queryStr));
-
-    //3. Sorting
-    if (req.query.sort) {
-      const tourSortQuery = spiltHelper(req.query.sort, ',', ' ');
-      tourQuery = tourQuery.sort(tourSortQuery);
-    } else {
-      tourQuery = tourQuery.sort('-createdAt'); // As by default we want our latest post to be first
-    }
-
-    //4. Limiting
-    if (req.query.fields) {
-      const tourLimitQuery = spiltHelper(req.query.fields, ',', ' ');
-      tourQuery = tourQuery.select(tourLimitQuery);
-    } else {
-      tourQuery = tourQuery.select('__v');
-    }
-
-    //5. Pagination
-    const page = req.query.page * 1 || 1;
-    const limit = req.query.limit * 1 || 100;
-    const skip = (page - 1) * limit;
-    console.log('skip page limit', skip, page, limit);
-
-    tourQuery = tourQuery.skip(skip).limit(limit);
-
-    // Executing Query
-    const tours = await tourQuery;
+    const tours = await tourFeatures.query;
     res.status(200).json({
       status: 'success',
       result: tours.length,
@@ -68,7 +28,6 @@ const getATour = async (req, res) => {
   try {
     const { id } = req.params;
     const aTour = await Tour.findById(id);
-    // const aTour = await Tour.findOne({ _id: id });
 
     res.status(200).json({
       status: 'success',
@@ -108,8 +67,8 @@ const updateATour = async (req, res) => {
     const { body } = req;
     const id = req.params.id;
     const tour = await Tour.findByIdAndUpdate(id, body, {
-      new: true, // It will return the new update data
-      runValidators: true, // It will run the validators on the body
+      new: true,
+      runValidators: true,
     });
 
     res.status(200).json({
@@ -143,11 +102,4 @@ const deleteATour = async (req, res) => {
   }
 };
 
-export {
-  createATour,
-  getATour,
-  getAllTours,
-  deleteATour,
-  updateATour,
-  aliasTopTours,
-};
+export { createATour, getATour, getAllTours, deleteATour, updateATour };

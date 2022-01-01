@@ -5,8 +5,8 @@ import {
   createATour,
   updateATour,
   deleteATour,
-  aliasTopTours,
 } from '../controllers/tourController.js';
+import { aliasTopTours } from '../middleware/tourMiddleware.js';
 
 const router = express.Router();
 // router.param('id');
