@@ -29,7 +29,6 @@ class APIFeatures {
   limitFields() {
     if (this.queryString.fields) {
       const tourLimitQuery = spiltHelper(this.queryString.fields, ',', ' ');
-      console.log('tourLimitQuery', tourLimitQuery);
       this.query = this.query.select(tourLimitQuery);
     } else {
       this.query = this.query.select('-__v');

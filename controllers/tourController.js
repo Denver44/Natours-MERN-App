@@ -102,4 +102,56 @@ const deleteATour = async (req, res) => {
   }
 };
 
-export { createATour, getATour, getAllTours, deleteATour, updateATour };
+const getTourStats = async (req, res) => {
+  try {
+    const stats = await Tour.aggregate([
+      {
+        $match: { ratingsAverage: { $gte: 4.5 } },
+      },
+      {
+        $group: {
+          _id: { $toUpper: '$difficulty' },
+          // _id: '$difficulty', // We have to provide the id and we can set to null if we don't want to filter it by some criteria.
+          numTours: { $sum: 1 },
+          numRatings: { $sum: '$ratingsQuantity' },
+          avgRating: { $avg: '$ratingsAverage' },
+          avgPrice: { $avg: '$price' },
+          maxPrice: { $max: '$price' },
+          minPrice: { $min: '$price' },
+        },
+      },
+      {
+        $sort: {
+          avgPrice: 1,
+          // Here we can use the above variable name as we have to apply sorting on them
+        },
+      },
+      // {
+      //   $match: { _id: { $eq: 'DIFFICULT' } },
+      // },
+    ]);
+
+    res.status(200).json({
+      stats: 'success',
+      data: {
+        stats,
+      },
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: 'fail',
+      message: error,
+    });
+  }
+};
+
+export {
+  createATour,
+  getATour,
+  getAllTours,
+  deleteATour,
+  updateATour,
+  getTourStats,
+};
+
+//  $toUpper It is just a mongodb operator to make  the filter in uppercase
