@@ -111,7 +111,6 @@ const getTourStats = async (req, res) => {
       {
         $group: {
           _id: { $toUpper: '$difficulty' },
-          // _id: '$difficulty', // We have to provide the id and we can set to null if we don't want to filter it by some criteria.
           numTours: { $sum: 1 },
           numRatings: { $sum: '$ratingsQuantity' },
           avgRating: { $avg: '$ratingsAverage' },
@@ -123,7 +122,6 @@ const getTourStats = async (req, res) => {
       {
         $sort: {
           avgPrice: 1,
-          // Here we can use the above variable name as we have to apply sorting on them
         },
       },
       // {
@@ -144,6 +142,61 @@ const getTourStats = async (req, res) => {
     });
   }
 };
+const getMonthlyPlan = async (req, res) => {
+  try {
+    const year = req.params.year * 1;
+    const monthlyPlan = await Tour.aggregate([
+      {
+        $unwind: '$startDates',
+      },
+      {
+        $match: {
+          startDates: {
+            $gte: new Date(`${year}-01-01`),
+            $lte: new Date(`${year}-12-31`),
+          },
+        },
+      },
+      {
+        $group: {
+          _id: { $month: '$startDates' },
+          numToursStarts: { $sum: 1 },
+          tours: { $push: '$name' },
+        },
+      },
+      {
+        $addFields: {
+          month: '$_id',
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+        },
+      },
+      {
+        $sort: {
+          numToursStarts: -1,
+        },
+      },
+      {
+        $limit: 12,
+      },
+    ]);
+
+    res.status(200).json({
+      stats: 'success',
+      data: {
+        monthlyPlan,
+      },
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: 'fail',
+      message: error,
+    });
+  }
+};
 
 export {
   createATour,
@@ -152,6 +205,5 @@ export {
   deleteATour,
   updateATour,
   getTourStats,
+  getMonthlyPlan,
 };
-
-//  $toUpper It is just a mongodb operator to make  the filter in uppercase
