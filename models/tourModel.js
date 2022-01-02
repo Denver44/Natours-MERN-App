@@ -1,3 +1,5 @@
+/* eslint-disable func-names */
+/* eslint-disable no-undef */
 import mongoose from 'mongoose';
 // import slugify from 'slugify';
 
@@ -74,26 +76,22 @@ tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
 
-// PRE Document Middleware its only works for .save() and .create()
+//  DOCUMENT MIDDLEWARE
+//  its only works for .save() and .create()
 
-// eslint-disable-next-line func-names
 // tourSchema.pre('save', function (next) {
 //   this.slug = slugify(this.name, { lower: true });
 //   next();
 // });
 
-// POST Document Middleware its only works for Save and Create
-
-// eslint-disable-next-line func-names
 // tourSchema.post('save', (doc, next) => {
 //   console.log('doc ', doc);
 //   next();
 // });
 
-// PRE Query Middleware
+//  QUERY  MIDDLEWARE
 
 //  So now for all find Query this function will get trigger
-// eslint-disable-next-line func-names
 tourSchema.pre(/^find/, function (next) {
   // Here this is here a query Object
   this.find({ secretTour: { $ne: true } });
@@ -102,21 +100,19 @@ tourSchema.pre(/^find/, function (next) {
   next();
 });
 
-// eslint-disable-next-line func-names
 tourSchema.post(/^find/, function (doc, next) {
   console.log(`Total time it take to do query ${Date.now() - this.start} ms`);
   console.log('doc ', doc);
   next();
 });
 
+//  AGGREGATION MIDDLEWARE
+tourSchema.pre('aggregate', function (next) {
+  // Here in this function this is our aggregation framework
+  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+  console.log(this.pipeline());
+  next();
+});
+
 const Tour = mongoose.model('Tour', tourSchema);
 export default Tour;
-
-// Note:-
-
-// Mongoose middleware
-// 1. Document
-// 2. Query
-// Just like in express we have middleware same we have middleware for mongoose that we can use before a data got through a model or after going to model pre and post and same for query middleware so.
-
-// We have PRE and POST Middleware we can call them hook also.
