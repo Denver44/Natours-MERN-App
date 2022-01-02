@@ -1,6 +1,7 @@
 /* eslint-disable func-names */
 /* eslint-disable no-undef */
 import mongoose from 'mongoose';
+// import validator from 'validator';
 // import slugify from 'slugify';
 
 const tourSchema = new mongoose.Schema(
@@ -12,6 +13,10 @@ const tourSchema = new mongoose.Schema(
       trim: true,
       maxlength: [40, 'A tour name must have less or equal then 40 characters'],
       minlength: [10, 'A tour name must have more or equal then 10 characters'],
+      // validate: [
+      //   validator.isAlpha(),
+      //   'Tour name must only contains characters',
+      // ],
     },
     slug: String,
     secretTour: {
@@ -49,7 +54,16 @@ const tourSchema = new mongoose.Schema(
       type: Number,
       required: [true, 'A Tour Must have a price'],
     },
-    priceDiscount: Number,
+    priceDiscount: {
+      type: Number,
+      validate: {
+        validator(val) {
+          // This will not work for update only works for creating a document
+          return val < this.price;
+        },
+        message: ' Discount price ({VALUE}) should be below regular price',
+      },
+    },
     summary: {
       type: String,
       trim: true, // THis will remove the whitespace from the end and start of the text
