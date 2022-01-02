@@ -10,6 +10,8 @@ const tourSchema = new mongoose.Schema(
       required: [true, 'A Tour Must have a name'],
       unique: true,
       trim: true,
+      maxlength: [40, 'A tour name must have less or equal then 40 characters'],
+      minlength: [10, 'A tour name must have more or equal then 10 characters'],
     },
     slug: String,
     secretTour: {
@@ -28,10 +30,16 @@ const tourSchema = new mongoose.Schema(
       type: String,
       required: [true, 'A tour must have a difficulty'],
       trim: true,
+      enum: {
+        values: ['easy', 'medium', 'difficult'],
+        message: 'Difficulty can be either easy, medium or validator',
+      },
     },
     ratingsAverage: {
       type: Number,
       default: 4.5,
+      min: [1, 'Rating must be above or equal to 1.0'],
+      max: [5, 'Rating must be below or equal to 5.0'],
     },
     ratingsQuantity: {
       type: Number,
@@ -116,3 +124,9 @@ tourSchema.pre('aggregate', function (next) {
 
 const Tour = mongoose.model('Tour', tourSchema);
 export default Tour;
+
+// Validators
+
+// 1. min and max works for both the date and number
+// 2. minlength and maxlength works for string
+// 3. enum works for the string
