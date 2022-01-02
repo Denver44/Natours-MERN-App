@@ -1,12 +1,9 @@
 import path from 'path';
 import express from 'express';
 import morgan from 'morgan';
-import dotenv from 'dotenv';
 import { tourRouter, userRouter } from './routers/route.js';
 import AppError from './utils/AppError.js';
 import GlobalErrorHandling from './controllers/errorController.js';
-
-dotenv.config();
 
 const app = express();
 const __dirname = path.resolve(path.dirname(''));
@@ -33,5 +30,3 @@ app.all('*', (req, res, next) => {
 app.use(GlobalErrorHandling);
 
 export default app;
-
-// Handlers are called controllers on MVC arch thats why we put that handler in controller.

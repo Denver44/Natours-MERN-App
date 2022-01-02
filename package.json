@@ -5,9 +5,9 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "nodemon -r dotenv/config server.js dotenv_config_path=.env.local",
     "start:import": "node seeding/import-dev-data.js",
-    "start:prod": "SET NODE_ENV=production& nodemon server.js",
+    "start:prod": "nodemon -r dotenv/config server.js server.js dotenv_config_path=.env.prod",
     "check-lint": "eslint --fix --ext .js .",
     "check-format": "prettier --check .",
     "fix-format": "prettier --write .",
