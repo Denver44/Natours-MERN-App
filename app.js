@@ -23,14 +23,29 @@ app.use((req, res, next) => {
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
-// .all is for all the http methods like gte, post, delete and etc
-// Order must be below so it means our req and res cycle is not finished that means there is no router related to that name so now this middleware will take care of it
 app.all('*', (req, res, next) => {
-  res.status(404).json({
-    status: 'fail',
-    message: `Can't find ${req.originalUrl} on this server`,
+  // res.status(404).json({
+  //   status: 'fail',
+  //   message: `Can't find ${req.originalUrl} on this server`,
+  // });
+  const err = new Error(`Can't find ${req.originalUrl} on this server`);
+  err.status = 'fail';
+  err.statusCode = 404;
+  next(err);
+});
+
+// Global Error Handling middleware
+// Express will automatically identify this error handling middleware  by justing see its function definition
+
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+  res.status(err.statusCode || 500).json({
+    status: err.status || 'error',
+    message: err.message || '',
   });
-  next();
 });
 
 export default app;
+
+// NOTE
+//  So whenever we pass anything in next() express will think that it is an error no matter what it is
