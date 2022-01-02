@@ -23,4 +23,14 @@ app.use((req, res, next) => {
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 
+// .all is for all the http methods like gte, post, delete and etc
+// Order must be below so it means our req and res cycle is not finished that means there is no router related to that name so now this middleware will take care of it
+app.all('*', (req, res, next) => {
+  res.status(404).json({
+    status: 'fail',
+    message: `Can't find ${req.originalUrl} on this server`,
+  });
+  next();
+});
+
 export default app;
