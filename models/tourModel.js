@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+// import slugify from 'slugify';
 
 const tourSchema = new mongoose.Schema(
   {
@@ -8,6 +9,7 @@ const tourSchema = new mongoose.Schema(
       unique: true,
       trim: true,
     },
+    slug: String,
     duration: {
       type: Number,
       required: [true, 'A tour must have a duration'],
@@ -61,27 +63,37 @@ const tourSchema = new mongoose.Schema(
   }
 );
 
+// Virtual field
+
 // eslint-disable-next-line func-names
 tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
+
+// PRE Document Middleware its only works for .save() and .create()
+
+// eslint-disable-next-line func-names
+// tourSchema.pre('save', function (next) {
+//   this.slug = slugify(this.name, { lower: true });
+//   next();
+// });
+
+// POST Document Middleware its only works for Save and Create
+
+// eslint-disable-next-line func-names
+// tourSchema.post('save', (doc, next) => {
+//   console.log('doc ', doc);
+//   next();
+// });
 
 const Tour = mongoose.model('Tour', tourSchema);
 export default Tour;
 
 // Note:-
 
-// Virtual properties are fields which are  basically fields that we can define in our schema but it will not be persisted so they will not be save in our database.
-// Fields like miles to kilometers conversion these can find cane bes said has virtual fields
+// Mongoose middleware
+// 1. Document
+// 2. Query
+// Just like in express we have middleware same we have middleware for mongoose that we can use before a data got through a model or after going to model pre and post and same for query middleware so.
 
-// durationWeeks We cannot use this virtual property for our query as the are not part of our DB.
-
-// In mongoose schema we can not only define our schema but we can pass the object of schema options
-/*
-  {
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true },
-  }
-*/
-
-// So here we have set that whenever data is send in output in json and object please send the virtuals also.
+// We have PRE and POST Middleware we can call them hook also.
