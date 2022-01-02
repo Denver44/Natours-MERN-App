@@ -124,7 +124,7 @@ tourSchema.pre(/^find/, function (next) {
 
 tourSchema.post(/^find/, function (doc, next) {
   console.log(`Total time it take to do query ${Date.now() - this.start} ms`);
-  console.log('doc ', doc);
+  // console.log('doc ', doc);
   next();
 });
 
