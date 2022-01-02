@@ -10,6 +10,10 @@ const tourSchema = new mongoose.Schema(
       trim: true,
     },
     slug: String,
+    secretTour: {
+      type: Boolean,
+      default: false,
+    },
     duration: {
       type: Number,
       required: [true, 'A tour must have a duration'],
@@ -85,6 +89,25 @@ tourSchema.virtual('durationWeeks').get(function () {
 //   console.log('doc ', doc);
 //   next();
 // });
+
+// PRE Query Middleware
+
+//  So now for all find Query this function will get trigger
+// eslint-disable-next-line func-names
+tourSchema.pre(/^find/, function (next) {
+  // Here this is here a query Object
+  this.find({ secretTour: { $ne: true } });
+  this.select('-secretTour');
+  this.start = Date.now();
+  next();
+});
+
+// eslint-disable-next-line func-names
+tourSchema.post(/^find/, function (doc, next) {
+  console.log(`Total time it take to do query ${Date.now() - this.start} ms`);
+  console.log('doc ', doc);
+  next();
+});
 
 const Tour = mongoose.model('Tour', tourSchema);
 export default Tour;
