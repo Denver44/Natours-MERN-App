@@ -12,7 +12,8 @@
     "check-format": "prettier --check .",
     "fix-format": "prettier --write .",
     "prepare": "husky install",
-    "pre-commit": "yarn check-format && yarn check-lint && git add -A ."
+    "pre-commit": "yarn check-format && yarn check-lint && git add -A .",
+    "debug": "ndb server.js"
   },
   "keywords": [],
   "author": "",
