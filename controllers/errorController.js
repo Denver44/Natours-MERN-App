@@ -1,13 +1,12 @@
-const sendErrorDev = (err, res) => {
+const sendErrorDev = (res, err) =>
   res.status(err.statusCode || 500).json({
     status: err.status || 'error',
     error: err,
     message: err.message || '',
     stack: err.stack,
   });
-};
 
-const sendErrorProd = (err, res) => {
+const sendErrorProd = (res, err) => {
   // Operational error which we trust
   if (err.isOperational) {
     res.status(err.statusCode || 500).json({
@@ -30,9 +29,6 @@ const sendErrorProd = (err, res) => {
 
 // eslint-disable-next-line no-unused-vars
 export default (err, req, res, next) => {
-  if (process.env.NODE_ENV === 'development') {
-    sendErrorDev(res, err);
-  } else if (process.env.NODE_ENV === 'production') {
-    sendErrorProd(res, err);
-  }
+  if (process.env.NODE_ENV === 'development') sendErrorDev(res, err);
+  else if (process.env.NODE_ENV === 'production') sendErrorProd(res, err);
 };

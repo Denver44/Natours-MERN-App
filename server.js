@@ -6,7 +6,7 @@ dotenv.config();
 import mongoose from 'mongoose';
 import app from './app.js';
 
-const PORT = process.env.NODE_ENV === 'development' ? process.env.PORT : 3000;
+const { PORT } = process.env;
 
 const DB = process.env.DATABASE.replace(
   '<PASSWORD>',
@@ -22,5 +22,7 @@ mongoose
   .catch((e) => console.log(e));
 
 app.listen(PORT, () => {
-  console.log(`server is started http://localhost:${PORT}`);
+  console.log(
+    `${process.env.NODE_ENV} server is started http://localhost:${PORT}`
+  );
 });
