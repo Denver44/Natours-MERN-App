@@ -33,14 +33,29 @@ const handleDuplicateFieldsDB = (err) => {
   return new AppError(message, 400);
 };
 
+const handleValidationErrorDB = (err) => {
+  const errorList = Object.values(err.errors).map((e) => e.message);
+  const message = errorList.join(', ');
+  return new AppError(message, 400);
+};
+
 // eslint-disable-next-line no-unused-vars
 export default (err, req, res, next) => {
   if (process.env.NODE_ENV === 'development') {
     sendErrorDev(res, err);
   } else if (process.env.NODE_ENV === 'production') {
     let error = { ...err };
-    if (err.name === 'CastError') error = handleCastErrorDB(error);
-    else if (err.code === 11000) error = handleDuplicateFieldsDB(error);
+    if (err.name === 'CastError') {
+      error = handleCastErrorDB(error);
+    } else if (err.code === 11000) {
+      error = handleDuplicateFieldsDB(error);
+    } else if (err.name === 'ValidationError') {
+      error = handleValidationErrorDB(error);
+    }
     sendErrorProd(res, error);
   }
 };
+
+//  400 is for Bad Request
+//  To loop over a object values we use object.values()
+//  To loop over a object Keys we use object.keys()
