@@ -18,11 +18,21 @@ mongoose
   // eslint-disable-next-line no-unused-vars
   .then((con) => {
     console.log('Remote DB connection successful');
-  })
-  .catch((e) => console.log(e));
+  });
+// .catch((e) => console.log(e)); // We should handle this rejection Globally
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(
     `${process.env.NODE_ENV} server is started http://localhost:${PORT}`
   );
+});
+
+// No we can handled any  unhandledRejection Globally entire this whole applications
+process.on('unhandledRejection', (err) => {
+  console.log(err.name, err.message);
+  console.log('UNHANDLED REJECTION! 💥 Shutting Down...');
+  server.close(() => {
+    // THis will shut down the server gracefully
+    process.exit(1);
+  });
 });
