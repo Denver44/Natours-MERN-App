@@ -3,6 +3,13 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+// We have to handle the uncaught exception
+process.on('uncaughtException', (err) => {
+  console.log(err.name, err.message);
+  console.log('UNCAUGHT EXCEPTION! 💥 Shutting Down...');
+  process.exit(1);
+});
+
 import mongoose from 'mongoose';
 import app from './app.js';
 
@@ -31,8 +38,5 @@ const server = app.listen(PORT, () => {
 process.on('unhandledRejection', (err) => {
   console.log(err.name, err.message);
   console.log('UNHANDLED REJECTION! 💥 Shutting Down...');
-  server.close(() => {
-    // THis will shut down the server gracefully
-    process.exit(1);
-  });
+  server.close(() => process.exit(1));
 });
