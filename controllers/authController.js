@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
-import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js';
+import AppError from '../utils/AppError.js';
 import catchAsync from '../utils/catchAsync.js';
+import { createJWTToken } from '../utils/helper.js';
 
 const signUp = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
@@ -11,9 +12,8 @@ const signUp = catchAsync(async (req, res, next) => {
     passwordConfirm: req.body.passwordConfirm,
     photo: req.body.photo,
   });
-  const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-  });
+
+  const token = createJWTToken(newUser._id);
 
   res.status(201).json({
     status: 'success',
@@ -24,15 +24,23 @@ const signUp = catchAsync(async (req, res, next) => {
   });
 });
 
-const signIn = catchAsync(async (req, res, next) => {
-  const newUser = await User.create(req.body);
+const login = catchAsync(async (req, res, next) => {
+  const { email, password } = req.body;
 
-  res.status(201).json({
+  if (!email || !password)
+    return next(new AppError('Please provide email & password', 400));
+
+  const user = await User.findOne({ email }).select('+password');
+
+  if (!user || !(await user.correctPassword(password, user.password)))
+    return next(new AppError('Incorrect email or password', 401));
+
+  const token = createJWTToken(user._id);
+
+  return res.status(200).json({
     status: 'success',
-    data: {
-      user: newUser,
-    },
+    token,
   });
 });
 
-export { signUp, signIn };
+export { signUp, login };

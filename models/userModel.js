@@ -24,6 +24,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please provide a password'],
     minlength: [8, 'Min length should be 8'],
+    select: false, // As we don't want to show hash password to others. Security purpose
   },
   passwordConfirm: {
     type: String,
@@ -38,16 +39,16 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-// eslint-disable-next-line consistent-return
 userSchema.pre('save', async function (next) {
-  // When we are changing username or email at that time we don't want to hash our password so for that this setup is used
   if (!this.isModified('password')) return next();
-
-  // This means we are modifying password means we doing something with password field now it should be encrypted.
   this.password = await bcrypt.hash(this.password, 12);
-  this.passwordConfirm = undefined; // We don't want this field to persisted in our DB
-  next();
+  this.passwordConfirm = undefined;
+  return next();
 });
+
+// We can actually create a methods on UserSchema
+userSchema.methods.correctPassword = async (candidatePassword, userPassword) =>
+  bcrypt.compare(candidatePassword, userPassword);
 
 const User = mongoose.model('User', userSchema);
 export default User;

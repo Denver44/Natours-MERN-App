@@ -1,5 +1,11 @@
+import jwt from 'jsonwebtoken';
+
 const spiltHelper = (source, breakWith, joinWith) =>
   source.split(breakWith).join(joinWith);
 
-// eslint-disable-next-line import/prefer-default-export
-export { spiltHelper };
+const createJWTToken = (id) =>
+  jwt.sign({ id }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  });
+
+export { spiltHelper, createJWTToken };
