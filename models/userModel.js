@@ -10,8 +10,8 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please tell us your email'],
     unique: true,
-    lowercase: true, // Transform the email in lowerCase
-    validate: [validator.isEmail(), 'Please Enter a valid Email Id'],
+    lowercase: true,
+    validate: [validator.isEmail, 'Please Enter a valid Email Id'],
   },
   photo: {
     type: String,
@@ -27,6 +27,6 @@ const userSchema = new mongoose.Schema({
     required: [true, 'Please confirm your password '],
   },
 });
-// model(name of the model,  SchemaName)
+
 const User = mongoose.model('User', userSchema);
 export default User;
