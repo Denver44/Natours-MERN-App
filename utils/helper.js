@@ -8,4 +8,6 @@ const createJWTToken = (id) =>
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 
-export { spiltHelper, createJWTToken };
+const milliSecondsToSeconds = (time) => parseInt(time.getTime() / 1000, 10);
+
+export { spiltHelper, createJWTToken, milliSecondsToSeconds };

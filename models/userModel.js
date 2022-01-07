@@ -3,6 +3,7 @@
 import mongoose from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
+import { milliSecondsToSeconds } from '../utils/helper.js';
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -24,19 +25,19 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please provide a password'],
     minlength: [8, 'Min length should be 8'],
-    select: false, // As we don't want to show hash password to others. Security purpose
+    select: false,
   },
   passwordConfirm: {
     type: String,
     required: [true, 'Please confirm your password '],
     validate: {
       validator: function (el) {
-        // This only work for ON SAVE!
         return el === this.password;
       },
       message: 'Confirm Password ({VALUE}) is not matching with password',
     },
   },
+  passwordChangeAt: Date,
 });
 
 userSchema.pre('save', async function (next) {
@@ -46,9 +47,18 @@ userSchema.pre('save', async function (next) {
   return next();
 });
 
-// We can actually create a methods on UserSchema
 userSchema.methods.correctPassword = async (candidatePassword, userPassword) =>
   bcrypt.compare(candidatePassword, userPassword);
+
+// FIX THE TIME ISSUE
+userSchema.methods.changePasswordAfter = function (JWTTimeStamp) {
+  if (this.passwordChangeAt) {
+    return JWTTimeStamp < milliSecondsToSeconds(this.passwordChangeAt);
+  }
+
+  // False means not changed
+  return false;
+};
 
 const User = mongoose.model('User', userSchema);
 export default User;

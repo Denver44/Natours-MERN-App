@@ -39,6 +39,12 @@ const handleValidationErrorDB = (err) => {
   return new AppError(message, 400);
 };
 
+const handleJWTError = () =>
+  new AppError('Invalid token. Please log in again!', 401);
+
+const handleJWTTokenExpireError = () =>
+  new AppError('Your token has expired. Please log in again!', 401);
+
 // eslint-disable-next-line no-unused-vars
 export default (err, req, res, next) => {
   if (process.env.NODE_ENV === 'development') {
@@ -51,11 +57,11 @@ export default (err, req, res, next) => {
       error = handleDuplicateFieldsDB(error);
     } else if (err.name === 'ValidationError') {
       error = handleValidationErrorDB(error);
+    } else if (err.name === 'JsonWebTokenError') {
+      error = handleJWTError();
+    } else if (err.name === 'TokenExpiredError') {
+      error = handleJWTTokenExpireError();
     }
     sendErrorProd(res, error);
   }
 };
-
-//  400 is for Bad Request
-//  To loop over a object values we use object.values()
-//  To loop over a object Keys we use object.keys()
