@@ -1,3 +1,4 @@
+/* eslint-disable object-shorthand */
 /* eslint-disable func-names */
 /* eslint-disable no-undef */
 import mongoose from 'mongoose';
@@ -57,7 +58,7 @@ const tourSchema = new mongoose.Schema(
     priceDiscount: {
       type: Number,
       validate: {
-        validator(val) {
+        validator: function (val) {
           // This will not work for update only works for creating a document
           return val < this.price;
         },
