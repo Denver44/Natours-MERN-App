@@ -8,7 +8,7 @@ import {
   getTourStats,
   getMonthlyPlan,
 } from '../controllers/tourController.js';
-import protect from '../middleware/authMiddleware.js';
+import { protect, restrictTo } from '../middleware/authMiddleware.js';
 import { aliasTopTours } from '../middleware/tourMiddleware.js';
 
 const router = express.Router();
@@ -19,6 +19,10 @@ router.route('/tour-stats').get(getTourStats);
 router.route('/monthly-plan/:year').get(getMonthlyPlan);
 
 router.route('/').get(protect, getAllTours).post(createATour);
-router.route('/:id').get(getATour).patch(updateATour).delete(deleteATour);
+router
+  .route('/:id')
+  .get(getATour)
+  .patch(updateATour)
+  .delete(protect, restrictTo('admin', 'lead-guide'), deleteATour);
 
 export default router;

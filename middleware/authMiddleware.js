@@ -44,7 +44,17 @@ const protect = catchAsync(async (req, res, next) => {
   return next();
 });
 
-export default protect;
+const restrictTo =
+  (...roles) =>
+  (req, res, next) => {
+    // FIX this Security issue
+    // req.user is coming from auth middleware so using that we can know which user is performing what;
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new AppError(' You do not have permission to perform this action', 403)
+      );
+    }
+    return next();
+  };
 
-// This is  promisify  from 'util' is inbuilt in node it will create a promise for us. so that we can use it in same structure as we are handling our promises using catchAsync
-// jwt.verify give a callback function bu instead of that we use promisify that will gives us promise so we can await function on that and if there is any error we can catch that error using catchAsync
+export { restrictTo, protect };

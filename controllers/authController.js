@@ -12,6 +12,7 @@ const signUp = catchAsync(async (req, res, next) => {
     passwordConfirm: req.body.passwordConfirm,
     photo: req.body.photo,
     passwordChangeAt: req.body.passwordChangeAt,
+    role: req.body.role,
   });
 
   const token = createJWTToken(newUser._id);
