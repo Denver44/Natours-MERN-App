@@ -14,7 +14,22 @@ const createJWTToken = (id) =>
 const createSendToken = (user, statusCode, res) => {
   const token = createJWTToken(user._id);
 
+  const cookieOptions = {
+    expires: new Date(
+      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 60 * 60 * 1000
+    ),
+    httpOnly: true, // THis will make sure that cookie is not accessed or modified in any way by the browser
+  };
+
+  if (process.env.NODE_ENV === 'production') {
+    cookieOptions.secure = true; // It will only send if there is a https connection
+  }
+
+  res.cookie('jwt', token, cookieOptions);
+
   if (statusCode === 201) {
+    // eslint-disable-next-line no-param-reassign
+    user.password = undefined;
     res.status(statusCode).json({
       status: 'success',
       token,
