@@ -3,6 +3,8 @@ import express from 'express';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
+import mongoSanitize from 'express-mongo-sanitize';
+import xss from 'xss-clean';
 import { tourRouter, userRouter } from './routers/route.js';
 import AppError from './utils/AppError.js';
 import GlobalErrorHandling from './controllers/errorController.js';
@@ -33,8 +35,14 @@ app.use('/api', limiter); // This limiter will only affect the route with /api
 
 // Body parser reading data from body into req.body, Here we have limited the body data to 10KB
 app.use(express.json({ limit: '10kb' }));
-//  Serving Static files
 
+// Mongo Sanitize, It will remove all the dollar sign from the req.body so that the query don't work
+app.use(mongoSanitize());
+
+// Data Sanitization using XSS Clean
+app.use(xss());
+
+//  Serving Static files
 app.use(express.static(`${__dirname}/public`));
 
 // Test Middleware
