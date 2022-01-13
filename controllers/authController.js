@@ -3,6 +3,7 @@ import User from '../models/userModel.js';
 import AppError from '../utils/AppError.js';
 import catchAsync from '../utils/catchAsync.js';
 import { createJWTToken } from '../utils/helper.js';
+import sendEmail from '../utils/email.js';
 
 const signUp = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
@@ -45,20 +46,49 @@ const login = catchAsync(async (req, res, next) => {
   });
 });
 
-// eslint-disable-next-line consistent-return
 const forgotPassword = catchAsync(async (req, res, next) => {
   // 1.Get user based on POSTed email'
 
   const user = await User.findOne({ email: req.body.email });
 
   // Return Error if user Doesn't exist
-  if (!user) return next(AppError('There is no user with email address', 404));
+  if (!user)
+    return next(new AppError('There is no user with email address', 404));
 
   // 2. Generate the random reset token
   const resetToken = user.createPasswordResetToken();
   await user.save({ validateBeforeSave: false }); // This will Disable the Validation as we just need to reset Password for that no Validation is Required.
 
   // 3. Send it ito user email's
+  const resetURL = `${req.protocol}://${req.get(
+    'host'
+  )}/api/v1/users/resetPassword/${resetToken}`;
+
+  const message = `Forgot your Password Sub,it a PATCH request with your new password and passwordConfirm to : ${resetURL}.\n If you didn't forgot your password. Please ignore this email`;
+
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: 'Your password reset token {valid for 10 min}',
+      message,
+    });
+
+    return res.status(200).json({
+      status: 'success',
+      message: 'Token sent to email',
+    });
+  } catch (error) {
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save({ validateBeforeSave: false });
+
+    return next(
+      new AppError(
+        'There was an error sending the email. Please Try again later!',
+        500
+      )
+    );
+  }
 });
 
 const resetPassword = catchAsync(async (req, res, next) => {});

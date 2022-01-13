@@ -5,6 +5,7 @@ import {
   login,
   forgotPassword,
 } from '../controllers/authController.js';
+
 import {
   getAUser,
   getAllUsers,
@@ -18,7 +19,7 @@ const router = express.Router();
 router.post('/signup', signUp);
 router.post('/login', login);
 router.post('/forgotPassword', forgotPassword);
-router.post('/resetPassword', resetPassword);
+router.patch('/resetPassword/:token', resetPassword); // As we will update the password so we will to update request that's whu we used patch
 
 router.route('/').get(getAllUsers).post(createAUser);
 router.route('/:id').get(getAUser).patch(updateAUser).delete(deleteAUser);
