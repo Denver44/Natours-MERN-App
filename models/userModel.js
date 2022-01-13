@@ -3,6 +3,7 @@
 import mongoose from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 import { milliSecondsToSeconds } from '../utils/helper.js';
 
 const userSchema = new mongoose.Schema({
@@ -43,6 +44,8 @@ const userSchema = new mongoose.Schema({
     },
   },
   passwordChangeAt: Date,
+  passwordResetToken: String,
+  passwordResetExpires: Date,
 });
 
 userSchema.pre('save', async function (next) {
@@ -63,6 +66,27 @@ userSchema.methods.changePasswordAfter = function (JWTTimeStamp) {
 
   // False means not changed
   return false;
+};
+
+userSchema.methods.createPasswordResetToken = function () {
+  // THis token will be send to email ID as a OTP.
+  const resetToken = crypto.randomBytes(32).toString('hex');
+
+  // We will save this in our DB for a While to compare it.
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10 Minutes && this 10*60*1000 = 60000 MilliSeconds
+
+  console.log(
+    { resetToken },
+    this.passwordResetToken,
+    this.passwordResetExpires
+  );
+
+  return resetToken; // As we will send the un encrypted Token to user via email and then we compare it to check it is valid or not.
 };
 
 const User = mongoose.model('User', userSchema);

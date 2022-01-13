@@ -45,4 +45,27 @@ const login = catchAsync(async (req, res, next) => {
   });
 });
 
-export { signUp, login };
+// eslint-disable-next-line consistent-return
+const forgotPassword = catchAsync(async (req, res, next) => {
+  // 1.Get user based on POSTed email'
+
+  const user = await User.findOne({ email: req.body.email });
+
+  // Return Error if user Doesn't exist
+  if (!user) return next(AppError('There is no user with email address', 404));
+
+  // 2. Generate the random reset token
+  const resetToken = user.createPasswordResetToken();
+  await user.save({ validateBeforeSave: false }); // This will Disable the Validation as we just need to reset Password for that no Validation is Required.
+
+  // 3. Send it ito user email's
+});
+
+const resetPassword = catchAsync(async (req, res, next) => {});
+
+export { signUp, login, forgotPassword, resetPassword };
+
+// STEPS For Reset and Forgot Password
+
+// 1. For Forgot Password A user will make a request to forgotPassword route with this email Id.
+// So we will send
