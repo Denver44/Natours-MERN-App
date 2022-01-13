@@ -45,6 +45,30 @@ const updateMe = catchAsync(async (req, res, next) => {
   });
 });
 
+const deleteMe = catchAsync(async (req, res, next) => {
+  const { password } = req.body;
+
+  if (!password) return next(new AppError('Please provide your password', 400));
+
+  const user = await User.findById(req.user.id).select([
+    '+password',
+    '+active',
+  ]);
+
+  if (!user || !(await user.correctPassword(password, user.password)))
+    return next(
+      new AppError('Incorrect Credentials, Please enter correct password', 401)
+    );
+
+  user.active = false;
+  user.save({ validateBeforeSave: false });
+
+  return res.status(204).json({
+    status: 'success',
+    data: null,
+  });
+});
+
 const createAUser = (req, res) => {
   res.status(500).json({
     status: 'error',
@@ -79,4 +103,5 @@ export {
   deleteAUser,
   updateAUser,
   updateMe,
+  deleteMe,
 };
