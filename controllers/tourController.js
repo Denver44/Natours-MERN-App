@@ -23,6 +23,7 @@ const getAllTours = catchAsync(async (req, res, next) => {
 
 const getATour = catchAsync(async (req, res, next) => {
   const aTour = await Tour.findById(req.params?.id);
+
   if (!aTour) return next(new AppError('No Tour found with that ID ', 404));
   return res.status(200).json({
     status: 'success',
