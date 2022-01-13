@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 import mongoose from 'mongoose';
 
 // Here we have use Parent referencing rather than
@@ -38,8 +39,18 @@ const reviewSchema = new mongoose.Schema(
   }
 );
 
-const Review = mongoose.model('Review', reviewSchema);
+reviewSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'user',
+    select: 'name photo', // Only name of user and photo should be send for review
+  }).populate({
+    path: 'tour',
+    select: 'name -_id', // Only name of tour is needed
+  });
+  next();
+});
 
+const Review = mongoose.model('Review', reviewSchema);
 export default Review;
 
 // The Virtual property is used to when we have a virtual property a filed which is not store in a database but calculated using some other value so we want this to show up whenever there is an output
