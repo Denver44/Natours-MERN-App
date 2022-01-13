@@ -2,7 +2,6 @@
 /* eslint-disable func-names */
 /* eslint-disable no-undef */
 import mongoose from 'mongoose';
-import User from './userModel.js';
 
 const tourSchema = new mongoose.Schema(
   {
@@ -108,7 +107,7 @@ const tourSchema = new mongoose.Schema(
         day: Number,
       },
     ],
-    guides: Array, // This is just for example but when the embedded data is can have many update then use referencing rather than embedding
+    guides: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
   },
   {
     toJSON: { virtuals: true },
@@ -123,15 +122,15 @@ tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
 
-//  DOCUMENT MIDDLEWARE
-//  its only works for .save() and .create()
+//  DOCUMENT MIDDLEWARE && its only works for .save() and .create()
 
-tourSchema.pre('save', async function (next) {
-  // Note:- This is just for example but when the embedded data is can have many update then use referencing rather than embedding
-  const guidesPromises = this.guides.map(async (id) => User.findById(id)); // This will return a promises of guides
-  this.guides = await Promise.all(guidesPromises);
-  next();
-});
+// Embedding Tour Guide
+// Note:- This is just for example but when the embedded data is can have many update then use referencing rather than embedding
+// tourSchema.pre('save', async function (next) {
+//   const guidesPromises = this.guides.map(async (id) => User.findById(id)); // This will return a promises of guides
+//   this.guides = await Promise.all(guidesPromises);
+//   next();
+// });
 
 // tourSchema.pre('save', function (next) {
 //   this.slug = slugify(this.name, { lower: true });
