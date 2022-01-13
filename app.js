@@ -5,6 +5,7 @@ import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import mongoSanitize from 'express-mongo-sanitize';
 import xss from 'xss-clean';
+import hpp from 'hpp';
 import { tourRouter, userRouter } from './routers/route.js';
 import AppError from './utils/AppError.js';
 import GlobalErrorHandling from './controllers/errorController.js';
@@ -42,6 +43,21 @@ app.use(mongoSanitize());
 // Data Sanitization using XSS Clean
 app.use(xss());
 
+// Prevent Parameter Pollution, It will clear up the polluted query string
+// using whitelist we can allow the query which we want.
+app.use(
+  hpp({
+    whitelist: [
+      'duration',
+      'ratingsQuantity',
+      'ratingsAverage',
+      'maxGroupSize',
+      'difficulty',
+      'price',
+    ],
+  })
+);
+
 //  Serving Static files
 app.use(express.static(`${__dirname}/public`));
 
@@ -62,3 +78,9 @@ app.all('*', (req, res, next) => {
 app.use(GlobalErrorHandling);
 
 export default app;
+
+// hpp means http parameter pollution
+// It is used to remove the duplicate params from the query string
+// Eg :- /api/v1/tours?sort=duration&sort=price
+
+// Now due to hpp it will take only the last query which is sort One.
