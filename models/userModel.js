@@ -55,6 +55,13 @@ userSchema.pre('save', async function (next) {
   return next();
 });
 
+// To log the Date and Time After resetting password we create this hook.
+userSchema.pre('save', function (next) {
+  if (!this.isModified('password') || this.isNew) return next();
+  this.passwordChangeAt = Date.now() - 1000;
+  return next();
+});
+
 userSchema.methods.correctPassword = async (candidatePassword, userPassword) =>
   bcrypt.compare(candidatePassword, userPassword);
 

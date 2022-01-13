@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import crypto from 'crypto';
 import User from '../models/userModel.js';
 import AppError from '../utils/AppError.js';
 import catchAsync from '../utils/catchAsync.js';
@@ -91,11 +92,35 @@ const forgotPassword = catchAsync(async (req, res, next) => {
   }
 });
 
-const resetPassword = catchAsync(async (req, res, next) => {});
+const resetPassword = catchAsync(async (req, res, next) => {
+  // 1 Get user based on the token
+  const hashedToken = crypto
+    .createHash('sha256')
+    .update(req.params.token)
+    .digest('hex');
+
+  const user = await User.findOne({
+    passwordResetToken: hashedToken,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+
+  // 2 If the token is not expired, and there is user, set the new password
+  if (!user) return next(new AppError('Token is invalid or has expired', 400));
+
+  // 3 Update changePasswordAt property for the user
+  user.password = req.body.password;
+  user.passwordConfirm = req.body.passwordConfirm;
+  user.passwordResetToken = undefined;
+  user.passwordResetExpires = undefined;
+  await user.save(); // THis time we want to validate conform password and password are same
+
+  // 4 Log in the user in , Send JWT
+
+  const token = createJWTToken(user._id);
+  return res.status(200).json({
+    status: 'success',
+    token,
+  });
+});
 
 export { signUp, login, forgotPassword, resetPassword };
-
-// STEPS For Reset and Forgot Password
-
-// 1. For Forgot Password A user will make a request to forgotPassword route with this email Id.
-// So we will send
