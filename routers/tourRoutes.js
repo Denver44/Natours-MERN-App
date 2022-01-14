@@ -8,6 +8,7 @@ import {
   getTourStats,
   getMonthlyPlan,
 } from '../controllers/tourController.js';
+import { createAReview } from '../controllers/reviewController.js';
 import { protect, restrictTo } from '../middleware/authMiddleware.js';
 import { aliasTopTours } from '../middleware/tourMiddleware.js';
 
@@ -24,5 +25,13 @@ router
   .get(getATour)
   .patch(updateATour)
   .delete(protect, restrictTo('admin', 'lead-guide'), deleteATour);
+
+// POST /tour/234faad4/reviews
+// GET /tour/234faad4/reviews
+// GET /tour/234faad4/reviews/94887fda
+
+router
+  .route('/:tourId/reviews')
+  .post(protect, restrictTo('user'), createAReview);
 
 export default router;
