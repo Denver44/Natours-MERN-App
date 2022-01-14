@@ -2,8 +2,6 @@
 /* eslint-disable func-names */
 /* eslint-disable no-undef */
 import mongoose from 'mongoose';
-// import validator from 'validator';
-// import slugify from 'slugify';
 
 const tourSchema = new mongoose.Schema(
   {
@@ -14,10 +12,6 @@ const tourSchema = new mongoose.Schema(
       trim: true,
       maxlength: [40, 'A tour name must have less or equal then 40 characters'],
       minlength: [10, 'A tour name must have more or equal then 10 characters'],
-      // validate: [
-      //   validator.isAlpha(),
-      //   'Tour name must only contains characters',
-      // ],
     },
     slug: String,
     secretTour: {
@@ -59,8 +53,7 @@ const tourSchema = new mongoose.Schema(
       type: Number,
       validate: {
         validator: function (val) {
-          // This will not work for update only works for creating a document
-          return val < this.price;
+          return val < this.price; // This will not work for update only works for creating a document
         },
         message: ' Discount price ({VALUE}) should be below regular price',
       },
@@ -85,6 +78,36 @@ const tourSchema = new mongoose.Schema(
       select: false, //  This way we exclude it so no it will be not send as response to client
     },
     startDates: [Date],
+
+    // Here we can remove the startLocation and make location[0].Day As start default location
+
+    startLocation: {
+      // GeoJSON
+      type: {
+        type: String,
+        default: 'Point', // But we can make Polygon, Line any one default, As it start location so it will be apoint only
+        enum: ['Point'],
+      },
+      coordinates: [Number], // That we except an Array of Numbers first longitude and then latitude
+      address: String,
+      description: String,
+    },
+
+    // Here the locations is an array of object and that's how we create a embedded documents in Mongoose Schema
+    locations: [
+      {
+        type: {
+          type: String,
+          default: 'Point',
+          enum: ['Point'],
+        },
+        coordinates: [Number],
+        address: String,
+        description: String,
+        day: Number,
+      },
+    ],
+    guides: [{ type: mongoose.Schema.ObjectId, ref: 'User' }],
   },
   {
     toJSON: { virtuals: true },
@@ -99,8 +122,22 @@ tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7;
 });
 
-//  DOCUMENT MIDDLEWARE
-//  its only works for .save() and .create()
+// Virtual Populate and doing Parent referencing
+tourSchema.virtual('reviews', {
+  ref: 'Review',
+  foreignField: 'tour',
+  localField: '_id',
+});
+
+//  DOCUMENT MIDDLEWARE && its only works for .save() and .create()
+
+// Embedding Tour Guide
+// Note:- This is just for example but when the embedded data is can have many update then use referencing rather than embedding
+// tourSchema.pre('save', async function (next) {
+//   const guidesPromises = this.guides.map(async (id) => User.findById(id)); // This will return a promises of guides
+//   this.guides = await Promise.all(guidesPromises);
+//   next();
+// });
 
 // tourSchema.pre('save', function (next) {
 //   this.slug = slugify(this.name, { lower: true });
@@ -123,9 +160,19 @@ tourSchema.pre(/^find/, function (next) {
   next();
 });
 
+tourSchema.pre(/^find/, function (next) {
+  // this always points to current Query
+  this.populate({
+    path: 'guides',
+    select: ['-__v', '-passwordChangedAt'],
+  });
+  next();
+});
+
 tourSchema.post(/^find/, function (doc, next) {
+  // in doc We actually get the document for the pre and post hooks
+  // console.log(doc);
   console.log(`Total time it take to do query ${Date.now() - this.start} ms`);
-  // console.log('doc ', doc);
   next();
 });
 
@@ -139,9 +186,3 @@ tourSchema.pre('aggregate', function (next) {
 
 const Tour = mongoose.model('Tour', tourSchema);
 export default Tour;
-
-// Validators
-
-// 1. min and max works for both the date and number
-// 2. minlength and maxlength works for string
-// 3. enum works for the string

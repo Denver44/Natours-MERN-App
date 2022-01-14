@@ -14,15 +14,19 @@ const DB = process.env.DATABASE?.replace(
 mongoose
   .connect(DB)
   .then(() => {
-    console.log('Remote DB connection successful');
+    console.log(
+      'Remote DB connection successful, database is ready to import & delete'
+    );
   })
   .catch((e) => console.log(e));
 
 //   Reading a Json File
 const __dirname = path.resolve(path.dirname(''));
 
+const fileName = 'tours.json';
+
 const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
+  fs.readFileSync(`${__dirname}/dev-data/data/${fileName}`)
 );
 
 // IMPORT Data from a Database
@@ -50,8 +54,5 @@ const deleteData = async () => {
 
 console.log(process.argv);
 
-if (process.argv[2] === 'import') {
-  importData();
-} else if (process.argv[2] === 'delete') {
-  deleteData();
-}
+if (process.argv.includes('import')) importData();
+else if (process.argv.includes('delete')) deleteData();

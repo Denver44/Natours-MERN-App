@@ -2,17 +2,22 @@ import User from '../models/userModel.js';
 import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/AppError.js';
 import { filterObj } from '../utils/helper.js';
+import {
+  createOne,
+  deleteOne,
+  getAll,
+  getOne,
+  updateOne,
+} from './handleFactory.js';
 
-const getAllUsers = catchAsync(async (req, res) => {
-  const users = await User.find();
-  res.status(200).json({
-    status: 'success',
-    result: users.length,
-    data: {
-      users,
-    },
-  });
-});
+const getAllUsers = getAll(User);
+const getAUser = getOne(User);
+const createAUser = createOne(User);
+
+// Don't update password with this && This is for updating user detail by Admin
+const updateAUser = updateOne(User);
+
+const deleteAUser = deleteOne(User);
 
 // THis is for updating user detail by user
 const updateMe = catchAsync(async (req, res, next) => {
@@ -68,33 +73,6 @@ const deleteMe = catchAsync(async (req, res, next) => {
     data: null,
   });
 });
-
-const createAUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'route for this endpoint is not defined yet',
-  });
-};
-const getAUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'route for this endpoint is not defined yet',
-  });
-};
-
-// THis is for updating user detail by Admin
-const updateAUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'route for this endpoint is not defined yet',
-  });
-};
-const deleteAUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'route for this endpoint is not defined yet',
-  });
-};
 
 export {
   getAUser,
