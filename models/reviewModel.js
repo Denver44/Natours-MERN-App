@@ -43,10 +43,16 @@ reviewSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'user',
     select: 'name photo', // Only name of user and photo should be send for review
-  }).populate({
-    path: 'tour',
-    select: 'name -_id', // Only name of tour is needed
   });
+
+  // Here we have turn off the tour populate.
+  // this.populate({
+  //   path: 'user',
+  //   select: 'name photo', // Only name of user and photo should be send for review
+  // }).populate({
+  //   path: 'tour',
+  //   select: 'name', // Only name of tour is needed
+  // });
   next();
 });
 
