@@ -2,6 +2,7 @@
 /* eslint-disable func-names */
 /* eslint-disable no-undef */
 import mongoose from 'mongoose';
+import slugify from 'slugify';
 
 const tourSchema = new mongoose.Schema(
   {
@@ -115,6 +116,12 @@ const tourSchema = new mongoose.Schema(
   }
 );
 
+// Indexes
+
+// tourSchema.index({ price: 1 }); // Single Index
+tourSchema.index({ price: 1, ratingsAverage: -1 }); // Compound Index
+tourSchema.index({ slug: 1 }); // Compound Index
+
 // Virtual field
 
 // eslint-disable-next-line func-names
@@ -129,20 +136,10 @@ tourSchema.virtual('reviews', {
   localField: '_id',
 });
 
-//  DOCUMENT MIDDLEWARE && its only works for .save() and .create()
-
-// Embedding Tour Guide
-// Note:- This is just for example but when the embedded data is can have many update then use referencing rather than embedding
-// tourSchema.pre('save', async function (next) {
-//   const guidesPromises = this.guides.map(async (id) => User.findById(id)); // This will return a promises of guides
-//   this.guides = await Promise.all(guidesPromises);
-//   next();
-// });
-
-// tourSchema.pre('save', function (next) {
-//   this.slug = slugify(this.name, { lower: true });
-//   next();
-// });
+tourSchema.pre('save', function (next) {
+  this.slug = slugify(this.name, { lower: true });
+  next();
+});
 
 // tourSchema.post('save', (doc, next) => {
 //   console.log('doc ', doc);
