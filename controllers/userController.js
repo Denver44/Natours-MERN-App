@@ -2,7 +2,7 @@ import User from '../models/userModel.js';
 import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/AppError.js';
 import { filterObj } from '../utils/helper.js';
-import { deleteOne } from './handleFactory.js';
+import { createOne, deleteOne, updateOne } from './handleFactory.js';
 
 const getAllUsers = catchAsync(async (req, res) => {
   const users = await User.find();
@@ -70,12 +70,6 @@ const deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
-const createAUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'route for this endpoint is not defined yet',
-  });
-};
 const getAUser = (req, res) => {
   res.status(500).json({
     status: 'error',
@@ -83,14 +77,9 @@ const getAUser = (req, res) => {
   });
 };
 
-// THis is for updating user detail by Admin
-const updateAUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'route for this endpoint is not defined yet',
-  });
-};
-
+const createAUser = createOne(User);
+// Don't update password with this && This is for updating user detail by Admin
+const updateAUser = updateOne(User);
 const deleteAUser = deleteOne(User);
 
 export {

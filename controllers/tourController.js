@@ -3,7 +3,7 @@ import Tour from '../models/tourModel.js';
 import APIFeatures from '../utils/apiFeature.js';
 import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/AppError.js';
-import { deleteOne } from './handleFactory.js';
+import { createOne, deleteOne, updateOne } from './handleFactory.js';
 
 const getAllTours = catchAsync(async (req, res, next) => {
   const tourFeatures = new APIFeatures(Tour.find(), req?.query)
@@ -34,30 +34,8 @@ const getATour = catchAsync(async (req, res, next) => {
   });
 });
 
-const createATour = catchAsync(async (req, res, next) => {
-  const newTour = await Tour.create(req.body);
-  res.status(201).json({
-    status: 'created',
-    data: {
-      tour: newTour,
-    },
-  });
-});
-
-const updateATour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findByIdAndUpdate(req?.params?.id, req?.body, {
-    new: true,
-    runValidators: true,
-  });
-  if (!tour) return next(new AppError('No Tour found with that ID ', 404));
-  return res.status(200).json({
-    status: 'updated',
-    data: {
-      tour,
-    },
-  });
-});
-
+const createATour = createOne(Tour);
+const updateATour = updateOne(Tour);
 const deleteATour = deleteOne(Tour);
 
 const getTourStats = catchAsync(async (req, res, next) => {

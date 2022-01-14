@@ -3,8 +3,10 @@ import {
   getAllReviews,
   createAReview,
   deleteAReview,
+  updateAReview,
 } from '../controllers/reviewController.js';
 import { protect, restrictTo } from '../middleware/authMiddleware.js';
+import { setTourUserIds } from '../middleware/reviewMiddleware.js';
 
 // No the params coming from other route is accessible to all the route as we set the mergerParams true.
 const router = express.Router({ mergeParams: true });
@@ -16,8 +18,11 @@ const router = express.Router({ mergeParams: true });
 router
   .route('/')
   .get(protect, getAllReviews)
-  .post(protect, restrictTo('user'), createAReview); // Only User can create Reviews
+  .post(protect, restrictTo('user'), setTourUserIds, createAReview); // Only User can create Reviews
 
-router.route('/:id').delete(protect, deleteAReview);
+router
+  .route('/:id')
+  .patch(protect, updateAReview)
+  .delete(protect, deleteAReview);
 
 export default router;
