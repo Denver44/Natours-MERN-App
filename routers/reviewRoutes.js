@@ -5,7 +5,12 @@ import {
 } from '../controllers/reviewController.js';
 import { protect, restrictTo } from '../middleware/authMiddleware.js';
 
-const router = express.Router();
+// No the params coming from other route is accessible to all the route as we set the mergerParams true.
+const router = express.Router({ mergeParams: true });
+
+// POST /tour/234faad4/reviews
+// GET /tour/234faad4/reviews
+// GET /tour/234faad4/reviews/94887fda
 
 router
   .route('/')
