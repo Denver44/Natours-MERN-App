@@ -15,25 +15,23 @@ import { aliasTopTours } from '../middleware/tourMiddleware.js';
 const router = express.Router();
 // router.param('id');
 
-// POST /tour/234faad4/reviews
-// GET /tour/234faad4/reviews
-// GET /tour/234faad4/reviews/94887fda
-// Here we used merge params and any req with /tour/tourId/reviews will be re directed to review router
 router.use('/:tourId/reviews', reviewRouter);
-
 router.route('/top-5-cheap').get(aliasTopTours, getAllTours);
 router.route('/tour-stats').get(getTourStats);
-router.route('/monthly-plan/:year').get(getMonthlyPlan);
 
-router.route('/').get(protect, getAllTours).post(createATour);
+router
+  .route('/monthly-plan/:year')
+  .get(protect, restrictTo('admin', 'lead-guide', 'guide'), getMonthlyPlan);
+
+router
+  .route('/')
+  .get(getAllTours)
+  .post(protect, restrictTo('admin', 'lead-guide'), createATour);
+
 router
   .route('/:id')
   .get(getATour)
-  .patch(updateATour)
+  .patch(protect, restrictTo('admin', 'lead-guide'), updateATour)
   .delete(protect, restrictTo('admin', 'lead-guide'), deleteATour);
-
-// router
-//   .route('/:tourId/reviews')
-//   .post(protect, restrictTo('user'), createAReview);
 
 export default router;
