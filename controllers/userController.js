@@ -2,6 +2,7 @@ import User from '../models/userModel.js';
 import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/AppError.js';
 import { filterObj } from '../utils/helper.js';
+import { deleteOne } from './handleFactory.js';
 
 const getAllUsers = catchAsync(async (req, res) => {
   const users = await User.find();
@@ -89,12 +90,8 @@ const updateAUser = (req, res) => {
     message: 'route for this endpoint is not defined yet',
   });
 };
-const deleteAUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'route for this endpoint is not defined yet',
-  });
-};
+
+const deleteAUser = deleteOne(User);
 
 export {
   getAUser,

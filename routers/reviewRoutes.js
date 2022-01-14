@@ -2,6 +2,7 @@ import express from 'express';
 import {
   getAllReviews,
   createAReview,
+  deleteAReview,
 } from '../controllers/reviewController.js';
 import { protect, restrictTo } from '../middleware/authMiddleware.js';
 
@@ -16,5 +17,7 @@ router
   .route('/')
   .get(protect, getAllReviews)
   .post(protect, restrictTo('user'), createAReview); // Only User can create Reviews
+
+router.route('/:id').delete(protect, deleteAReview);
 
 export default router;
