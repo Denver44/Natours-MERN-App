@@ -18,9 +18,11 @@ import {
 } from '../controllers/userController.js';
 
 import { protect, restrictTo } from '../middleware/authMiddleware.js';
+import { setUserId } from '../middleware/userMiddleware.js';
 
 const router = express.Router();
 
+router.get('/me', protect, setUserId, getAUser);
 router.post('/signup', signUp);
 router.post('/login', login);
 
