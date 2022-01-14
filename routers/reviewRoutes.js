@@ -4,6 +4,7 @@ import {
   createAReview,
   deleteAReview,
   updateAReview,
+  getAReview,
 } from '../controllers/reviewController.js';
 import { protect, restrictTo } from '../middleware/authMiddleware.js';
 import { setTourUserIds } from '../middleware/reviewMiddleware.js';
@@ -22,6 +23,7 @@ router
 
 router
   .route('/:id')
+  .get(protect, getAReview)
   .patch(protect, updateAReview)
   .delete(protect, deleteAReview);
 

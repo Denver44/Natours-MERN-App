@@ -1,39 +1,16 @@
 /* eslint-disable no-unused-vars */
 import Tour from '../models/tourModel.js';
-import APIFeatures from '../utils/apiFeature.js';
 import catchAsync from '../utils/catchAsync.js';
-import AppError from '../utils/AppError.js';
-import { createOne, deleteOne, updateOne } from './handleFactory.js';
+import {
+  createOne,
+  deleteOne,
+  getOne,
+  updateOne,
+  getAll,
+} from './handleFactory.js';
 
-const getAllTours = catchAsync(async (req, res, next) => {
-  const tourFeatures = new APIFeatures(Tour.find(), req?.query)
-    .filter()
-    .paginate()
-    .limitFields()
-    .sort();
-
-  const tours = await tourFeatures.query;
-  res.status(200).json({
-    status: 'success',
-    result: tours.length,
-    data: {
-      tours,
-    },
-  });
-});
-
-const getATour = catchAsync(async (req, res, next) => {
-  const aTour = await Tour.findById(req.params?.id).populate('reviews');
-
-  if (!aTour) return next(new AppError('No Tour found with that ID ', 404));
-  return res.status(200).json({
-    status: 'success',
-    data: {
-      tour: aTour,
-    },
-  });
-});
-
+const getAllTours = getAll(Tour);
+const getATour = getOne(Tour, { path: 'reviews' });
 const createATour = createOne(Tour);
 const updateATour = updateOne(Tour);
 const deleteATour = deleteOne(Tour);
