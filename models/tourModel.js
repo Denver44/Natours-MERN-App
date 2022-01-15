@@ -2,6 +2,7 @@
 /* eslint-disable func-names */
 /* eslint-disable no-undef */
 import mongoose from 'mongoose';
+import slugify from 'slugify';
 
 const tourSchema = new mongoose.Schema(
   {
@@ -40,6 +41,7 @@ const tourSchema = new mongoose.Schema(
       default: 4.5,
       min: [1, 'Rating must be above or equal to 1.0'],
       max: [5, 'Rating must be below or equal to 5.0'],
+      set: (val) => Math.round(val * 10) / 10, // 4.66 *10 = 46.66 => 47.66 => 4.7
     },
     ratingsQuantity: {
       type: Number,
@@ -115,6 +117,13 @@ const tourSchema = new mongoose.Schema(
   }
 );
 
+// Indexes
+
+// tourSchema.index({ price: 1 }); // Single Index
+tourSchema.index({ price: 1, ratingsAverage: -1 }); // Compound Index
+tourSchema.index({ slug: 1 }); // Compound Index
+tourSchema.index({ startLocation: '2dsphere' }); // For Geo Query we have to create Index for field which we want to do query.
+
 // Virtual field
 
 // eslint-disable-next-line func-names
@@ -129,20 +138,10 @@ tourSchema.virtual('reviews', {
   localField: '_id',
 });
 
-//  DOCUMENT MIDDLEWARE && its only works for .save() and .create()
-
-// Embedding Tour Guide
-// Note:- This is just for example but when the embedded data is can have many update then use referencing rather than embedding
-// tourSchema.pre('save', async function (next) {
-//   const guidesPromises = this.guides.map(async (id) => User.findById(id)); // This will return a promises of guides
-//   this.guides = await Promise.all(guidesPromises);
-//   next();
-// });
-
-// tourSchema.pre('save', function (next) {
-//   this.slug = slugify(this.name, { lower: true });
-//   next();
-// });
+tourSchema.pre('save', function (next) {
+  this.slug = slugify(this.name, { lower: true });
+  next();
+});
 
 // tourSchema.post('save', (doc, next) => {
 //   console.log('doc ', doc);
@@ -179,8 +178,8 @@ tourSchema.post(/^find/, function (doc, next) {
 //  AGGREGATION MIDDLEWARE
 tourSchema.pre('aggregate', function (next) {
   // Here in this function this is our aggregation framework
-  this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
-  console.log(this.pipeline());
+  this.pipeline().push({ $match: { secretTour: { $ne: true } } });
+  // console.log(this.pipeline());
   next();
 });
 

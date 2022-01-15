@@ -3,6 +3,8 @@ import path from 'path';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import Tour from '../models/tourModel.js';
+import Review from '../models/reviewModel.js';
+import User from '../models/userModel.js';
 
 dotenv.config();
 
@@ -23,17 +25,17 @@ mongoose
 //   Reading a Json File
 const __dirname = path.resolve(path.dirname(''));
 
-const fileName = 'tours.json';
+const fileName = ['tours.json', 'reviews.json', 'users.json'];
 
-const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/dev-data/data/${fileName}`)
+const [tour, review, user] = fileName.map((file) =>
+  JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/${file}`))
 );
-
-// IMPORT Data from a Database
 
 const importData = async () => {
   try {
-    await Tour.create(tours);
+    await Tour.create(tour);
+    await Review.create(review);
+    await User.create(user, { validateBeforeSave: false });
     console.log('Data successfully imported');
   } catch (error) {
     console.log(error);
@@ -41,10 +43,11 @@ const importData = async () => {
   process.exit(); // To get exit from the process
 };
 
-// DELETE all Data from a Database
 const deleteData = async () => {
   try {
     await Tour.deleteMany();
+    await Review.deleteMany();
+    await User.deleteMany();
     console.log('Data successfully deleted');
   } catch (error) {
     console.log(error);
@@ -52,7 +55,7 @@ const deleteData = async () => {
   process.exit();
 };
 
-console.log(process.argv);
+// console.log(process.argv);
 
 if (process.argv.includes('import')) importData();
 else if (process.argv.includes('delete')) deleteData();

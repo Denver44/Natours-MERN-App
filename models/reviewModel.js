@@ -1,6 +1,6 @@
 /* eslint-disable func-names */
 import mongoose from 'mongoose';
-
+import Tour from './tourModel.js';
 // Here we have use Parent referencing rather than
 // Here both tours & users are in a sense of this data set, because we don't want a huge array in a parent element because there can be many reviews
 // So if we don't know how much our array will grow we must using parent referencing
@@ -39,6 +39,12 @@ const reviewSchema = new mongoose.Schema(
   }
 );
 
+// CHECK IN FUTURE:
+//  Currently not working check it tomorrow
+
+// One use review for One tour to be unique he cannot review more than once for same tour.
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
+
 reviewSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'user',
@@ -54,6 +60,60 @@ reviewSchema.pre(/^find/, function (next) {
   //   select: 'name', // Only name of tour is needed
   // });
   next();
+});
+
+// REVIEW AVERAGE AND COUNT AGGREGATION
+
+// Here we will create a statics methods to calculate the averageRatings and Ratings for the tours.
+// Here we have to call aggregate method and in statics method this variable contains aggregate methods.
+
+reviewSchema.statics.calcAverageRatings = async function (tourId) {
+  const stats = await this.aggregate([
+    {
+      $match: { tour: tourId },
+    },
+    {
+      $group: {
+        _id: '$tour',
+        nRating: { $sum: 1 }, // This means if it same id it will add One to sum
+        avgRating: { $avg: '$rating' },
+      },
+    },
+  ]);
+
+  if (stats.length > 0) {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: stats[0].nRating,
+      ratingsAverage: stats[0].avgRating,
+    });
+  } else {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsQuantity: 0,
+      ratingsAverage: 4.5,
+    });
+  }
+};
+
+reviewSchema.post('save', function () {
+  // To use the calcAverageRatings function we used this.constructor because this points to current model and we have the function in that model.
+  this.constructor.calcAverageRatings(this.tour);
+});
+
+// findByIdAndUpdate
+// findByIdAndDelete
+
+// Toughest Point
+// Do it Twice
+// Explore more abu the clone().
+
+reviewSchema.pre(/^findOneAnd/, async function (next) {
+  this.r = await this?.findOne()?.clone();
+  console.log(this.r);
+  next();
+});
+
+reviewSchema.post(/^findOneAnd/, async function () {
+  await this?.r?.constructor?.calcAverageRatings(this?.r?.tour);
 });
 
 const Review = mongoose.model('Review', reviewSchema);

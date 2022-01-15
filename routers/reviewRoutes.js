@@ -9,22 +9,18 @@ import {
 import { protect, restrictTo } from '../middleware/authMiddleware.js';
 import { setTourUserIds } from '../middleware/reviewMiddleware.js';
 
-// No the params coming from other route is accessible to all the route as we set the mergerParams true.
-const router = express.Router({ mergeParams: true });
-
-// POST /tour/234faad4/reviews
-// GET /tour/234faad4/reviews
-// GET /tour/234faad4/reviews/94887fda
+const router = express.Router({ mergeParams: true }); // No the params coming from other route is accessible to all the route as we set the mergerParams true.
+router.use(protect);
 
 router
   .route('/')
-  .get(protect, getAllReviews)
-  .post(protect, restrictTo('user'), setTourUserIds, createAReview); // Only User can create Reviews
+  .get(getAllReviews)
+  .post(restrictTo('user'), setTourUserIds, createAReview);
 
 router
   .route('/:id')
-  .get(protect, getAReview)
-  .patch(protect, updateAReview)
-  .delete(protect, deleteAReview);
+  .get(getAReview)
+  .patch(restrictTo('user', 'admin'), updateAReview)
+  .delete(restrictTo('user', 'admin'), deleteAReview);
 
 export default router;

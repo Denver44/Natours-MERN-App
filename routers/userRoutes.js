@@ -22,23 +22,22 @@ import { setUserId } from '../middleware/userMiddleware.js';
 
 const router = express.Router();
 
-router.get('/me', protect, setUserId, getAUser);
 router.post('/signup', signUp);
 router.post('/login', login);
-
-router.patch('/updateMyPassword', protect, updatePassword);
-
 router.post('/forgotPassword', forgotPassword);
-router.patch('/resetPassword/:token', resetPassword); // As we will update the password so we will to update request that's whu we used patch
+router.patch('/resetPassword/:token', resetPassword);
 
-router.patch('/updateMe', protect, updateMe);
-router.delete('/deleteMe', protect, deleteMe);
+// All Route are Protected after this
+router.use(protect);
+
+router.get('/me', setUserId, getAUser);
+router.patch('/updateMyPassword', updatePassword);
+router.patch('/updateMe', updateMe);
+router.delete('/deleteMe', deleteMe);
+
+router.use(restrictTo('admin'));
 
 router.route('/').get(getAllUsers).post(createAUser);
-router
-  .route('/:id')
-  .get(getAUser)
-  .patch(updateAUser)
-  .delete(protect, restrictTo('admin'), deleteAUser);
+router.route('/:id').get(getAUser).patch(updateAUser).delete(deleteAUser);
 
 export default router;
