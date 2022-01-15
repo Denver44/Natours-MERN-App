@@ -39,6 +39,12 @@ const reviewSchema = new mongoose.Schema(
   }
 );
 
+// CHECK IN FUTURE:
+//  Currently not working check it tomorrow
+
+// One use review for One tour to be unique he cannot review more than once for same tour.
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
+
 reviewSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'user',

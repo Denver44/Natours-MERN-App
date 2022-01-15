@@ -53,6 +53,8 @@ const userSchema = new mongoose.Schema({
   },
 });
 
+//  NOTE : Always comment ou the below two hooks when u r importing data otherwise hashed password will get hashed.
+
 userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   this.password = await bcrypt.hash(this.password, 12);
