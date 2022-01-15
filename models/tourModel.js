@@ -122,6 +122,7 @@ const tourSchema = new mongoose.Schema(
 // tourSchema.index({ price: 1 }); // Single Index
 tourSchema.index({ price: 1, ratingsAverage: -1 }); // Compound Index
 tourSchema.index({ slug: 1 }); // Compound Index
+tourSchema.index({ startLocation: '2dsphere' }); // For Geo Query we have to create Index for field which we want to do query.
 
 // Virtual field
 
