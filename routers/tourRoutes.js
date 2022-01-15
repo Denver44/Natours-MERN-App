@@ -8,6 +8,7 @@ import {
   getTourStats,
   getMonthlyPlan,
   getToursWithIn,
+  getDistances,
 } from '../controllers/tourController.js';
 import reviewRouter from './reviewRoutes.js';
 import { protect, restrictTo } from '../middleware/authMiddleware.js';
@@ -24,12 +25,14 @@ router
   .route('/monthly-plan/:year')
   .get(protect, restrictTo('admin', 'lead-guide', 'guide'), getMonthlyPlan);
 
+// /tours-within?distance=233&center=-40,45&unit=mi
+// /tours-within/233/center/-40,45/unit/mi (This looks more appropriate)
 router
   .route('/tours-within/:distance/center/:latlng/unit/:unit')
   .get(getToursWithIn);
 
-// /tours-within?distance=233&center=-40,45&unit=mi
-// /tours-within/233/center/-40,45/unit/mi (This looks more appropriate)
+// This route will give all the route in certain distances
+router.route('/distances/:latlng/unit/:unit').get(getDistances);
 
 router
   .route('/')
