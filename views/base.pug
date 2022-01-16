@@ -1,1 +1,32 @@
-h1 The park camper
+doctype html
+html
+    head
+        title Natours | #{tour}
+        //- To do String interpolation like ES^ we use # whereas in ES6 we use $.
+
+        //- This href will make network request to get the file.
+        link(rel='stylesheet' href='css/style.css') 
+        link(rel='shortcut icon' type='image/png' href='img/favicon.png')
+        //- Here to set the attributes of a html tag we use brackets
+        //- We have to write the attributes property using single quote. 
+    
+
+    body 
+        //- We can execute JavaScript code also just putting = 
+        //- The variables name should be same as what we send from our req res cycle.
+        //- using (=) the whole line become javascript code.
+    
+        h1= tour 
+        h2= user.toUpperCase()
+        // h1 The park camper
+
+        //- Different types of comments in our browser.
+        //- This comment will be visible in our browser
+        //- h1 The park camper
+        //- This comment will be not visible in our browser
+
+        //- We can do javascript code also here, this are called.
+        -const x = 9;
+        h2= 2*x
+
+        p This is just some text
