@@ -8,17 +8,23 @@ import xss from 'xss-clean';
 import hpp from 'hpp';
 
 import AppError from './utils/AppError.js';
-import { tourRouter, userRouter, reviewRouter } from './routers/route.js';
+import {
+  tourRouter,
+  userRouter,
+  reviewRouter,
+  viewRouter,
+} from './routers/route.js';
 import GlobalErrorHandling from './controllers/errorController.js';
 
 const app = express();
 const __dirname = path.resolve(path.dirname(''));
 
 //  Serving Static files
+
 app.use(express.static(path.join(__dirname, 'public'))); // Now we don't need to put the slashes and to view the pages in public folder : http://localhost:PORT/fileName.ext => http://localhost:PORT/index.html
-// app.use(express.static(`${__dirname}/public`));
 
 // Setting the Template Engine
+
 app.set('view engine', 'pug'); // Here we have set the template engine is pug so we don't need to put the extension when we render the templates, that's the benefit of setting template.
 app.set('views', path.join(__dirname, 'views')); // We have set the path of views folder.
 
@@ -32,7 +38,7 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-// Adapt this upon your website requirement
+// Change the value according to your website requirement
 
 // Limit the number of Request
 const limiter = rateLimit({
@@ -74,26 +80,7 @@ app.use((req, res, next) => {
 });
 
 // Rendering template file
-
-// http://localhost:5000/
-app.get('/', (req, res) => {
-  res.status(200).render('base', {
-    title: 'Exciting tours for adventurous people',
-    user: 'Denver',
-  });
-});
-
-app.get('/overview', (req, res) => {
-  res.status(200).render('overview', {
-    title: 'All Tours',
-  });
-});
-
-app.get('/tour', (req, res) => {
-  res.status(200).render('tour', {
-    title: 'The forest Hiker Tour',
-  });
-});
+app.use('/', viewRouter);
 
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
@@ -108,5 +95,4 @@ app.use(GlobalErrorHandling);
 
 export default app;
 
-// For serving static files in public folder
-// http://localhost:5000/ + fileName
+// For serving static files in public folder => http://localhost:5000/ + fileName
