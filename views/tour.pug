@@ -1,4 +1,43 @@
 extends base
 
+
+mixin overviewBoxDetail(label,text, icon)
+    .overview-box__detail
+        svg.overview-box__icon
+            use(xlink:href=`/img/icons.svg#icon-${icon}`)
+        span.overview-box__label= label
+        span.overview-box__text= dateFormat(text)
+
+
 block content
-    h1 This is the tour page
+
+    -   const dateFormat = (date) => date.toLocaleString('en-us', {month : 'long', year : 'numeric'})
+
+    section.section-header
+        .header__hero
+            .header__hero-overlay &nbsp;
+            img.header__hero-img(src=`/img/tours/${tour.imageCover}`, alt=tour.name)
+
+        .heading-box
+            h1.heading-primary
+                span= tour.name
+            .heading-box__group
+                .heading-box__detail
+                    svg.heading-box__icon
+                        use(xlink:href='/img/icons.svg#icon-clock')
+                    span.heading-box__text= `${tour.duration} days`
+                .heading-box__detail
+                    svg.heading-box__icon
+                        use(xlink:href='/img/icons.svg#icon-map-pin')
+                    span.heading-box__text= tour.startLocation.description
+
+    section.section-description
+        .overview-box
+            .overview-box__group
+                h2.heading-secondary.ma-bt-lg Quick facts
+                +overviewBoxDetail('Next date', tour.startDates[0], 'calendar')
+                +overviewBoxDetail('Difficulty', tour.difficulty, 'trending-up')
+                +overviewBoxDetail('Participants', `${tour.maxGroupSize} people`, 'user')
+                +overviewBoxDetail('Rating', `${tour.ratingsAverage} / 5` , 'star')
+            
+
