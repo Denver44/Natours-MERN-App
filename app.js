@@ -78,8 +78,20 @@ app.use((req, res, next) => {
 // http://localhost:5000/
 app.get('/', (req, res) => {
   res.status(200).render('base', {
-    tour: 'The Forest hiker',
+    title: 'Exciting tours for adventurous people',
     user: 'Denver',
+  });
+});
+
+app.get('/overview', (req, res) => {
+  res.status(200).render('overview', {
+    title: 'All Tours',
+  });
+});
+
+app.get('/tour', (req, res) => {
+  res.status(200).render('tour', {
+    title: 'The forest Hiker Tour',
   });
 });
 
