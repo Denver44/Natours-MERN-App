@@ -1,13 +1,13 @@
 doctype html
 html
     head
-        meta(charset='UTF-8')
-        meta(name='viewport' content='width=device-width, initial-scale=1.0')
-        link(rel='stylesheet' href='/css/style.css') 
-        link(rel='shortcut icon' type='image/png' href='/img/favicon.png')
-        link(href='https://fonts.googleapis.com/css?family=Lato:300,300i,700' rel='stylesheet')
-        title Natours | #{title}
-
+        block head
+            meta(charset='UTF-8')
+            meta(name='viewport' content='width=device-width, initial-scale=1.0')
+            link(rel='stylesheet' href='/css/style.css') 
+            link(rel='shortcut icon' type='image/png' href='/img/favicon.png')
+            link(href='https://fonts.googleapis.com/css?family=Lato:300,300i,700' rel='stylesheet')
+            title Natours | #{title}
 
     body
 
@@ -20,4 +20,20 @@ html
 
         // FOOTER
         include _footer
+    
+    
 
+
+//- Here we have created a block name is head
+//- In block we can append also prepend also and even we can replace it 
+//- So for this head we use mainly we use append or prepend as we have link any JS or CSS file.
+//- block head
+//-             meta(charset='UTF-8')
+//-             meta(name='viewport' content='width=device-width, initial-scale=1.0')
+//-             link(rel='stylesheet' href='/css/style.css') 
+//-             link(rel='shortcut icon' type='image/png' href='/img/favicon.png')
+//-             link(href='https://fonts.googleapis.com/css?family=Lato:300,300i,700' rel='stylesheet')
+//-             title Natours | #{title}
+
+
+//- script(src='/js/mapBox.js') We append at the end because we not get data as dom is not render full if we put it at the top.
