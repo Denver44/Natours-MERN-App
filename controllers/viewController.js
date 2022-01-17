@@ -27,7 +27,7 @@ const getTour = catchAsync(async (req, res, next) => {
   if (!tour) return new AppError('No such tour is available', 404);
 
   return res.status(200).render('tour', {
-    title: 'The forest Hiker Tour',
+    title: `${tour.name} Tour`,
     tour,
   });
 });
