@@ -18,7 +18,11 @@ import {
   deleteMe,
 } from '../controllers/userController.js';
 import { protect, restrictTo } from '../middleware/authMiddleware.js';
-import { setUserId, upload } from '../middleware/userMiddleware.js';
+import {
+  resizeUserPhoto,
+  setUserId,
+  upload,
+} from '../middleware/userMiddleware.js';
 
 const router = express.Router();
 
@@ -35,9 +39,8 @@ router.use(protect);
 router.get('/me', setUserId, getAUser);
 router.patch('/updateMyPassword', updatePassword);
 
-// Here we have to upload single image that's why we use single function and in that we have to pass the field Name which have the file
-// in our request we will get one field file in there all the detail of image will be there (req.file)
-router.patch('/updateMe', upload.single('photo'), updateMe);
+router.patch('/updateMe', upload.single('photo'), resizeUserPhoto, updateMe);
+
 router.delete('/deleteMe', deleteMe);
 
 router.use(restrictTo('admin'));

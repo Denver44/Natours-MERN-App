@@ -1,4 +1,5 @@
 import multer from 'multer';
+import sharp from 'sharp';
 import AppError from '../utils/AppError.js';
 
 const setUserId = (req, res, next) => {
@@ -6,20 +7,25 @@ const setUserId = (req, res, next) => {
   next();
 };
 
-// Here we configured the storage path for our photo
-const multerStorage = multer.diskStorage({
-  // Here cb (callback) it is same as next but not express next, we can send error and things which we do in our next of express.
-  destination: (req, file, cb) => {
-    cb(null, 'public/img/users');
-  },
+// Saving the image in our buffer so that we can resize it easily.
+const multerStorage = multer.memoryStorage();
 
-  filename: (req, file, cb) => {
-    const ext = file.mimetype.split('/')[1];
-    const fileName = `user-${req.user.id}-${Date.now()}.${ext}`;
+// IMAGE PROCESSING
 
-    cb(null, fileName);
-  },
-});
+// This is express middleware
+const resizeUserPhoto = (req, res, next) => {
+  if (!req.file) return next(); // if no file then go to next middleware
+
+  req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`; // as we want filename because using this key we actually save the file in db check in updateMe Controller.
+
+  sharp(req.file.buffer)
+    .resize(500, 500) // Width and Height set
+    .toFormat('jpeg') // Format change to jpeg
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/users/${req.file.filename}`);
+
+  return next();
+};
 
 // Here we configure a filter which will check that data or the file is a image type or not.
 const multerFilter = (req, file, cb) => {
@@ -32,4 +38,4 @@ const multerFilter = (req, file, cb) => {
 
 const upload = multer({ storage: multerStorage, fileFilter: multerFilter });
 
-export { setUserId, upload };
+export { setUserId, upload, resizeUserPhoto };
