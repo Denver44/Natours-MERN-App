@@ -13,10 +13,6 @@ import {
 import reviewRouter from './reviewRoutes.js';
 import { protect, restrictTo } from '../middleware/authMiddleware.js';
 import { aliasTopTours } from '../middleware/tourMiddleware.js';
-import {
-  resizeTourPhoto,
-  uploadTourImages,
-} from '../middleware/tourPhotoMiddleware.js';
 
 const router = express.Router();
 // router.param('id');
@@ -41,13 +37,7 @@ router.route('/distances/:latlng/unit/:unit').get(getDistances);
 router
   .route('/')
   .get(getAllTours)
-  .post(
-    protect,
-    restrictTo('admin', 'lead-guide'),
-    uploadTourImages,
-    resizeTourPhoto,
-    createATour
-  );
+  .post(protect, restrictTo('admin', 'lead-guide'), createATour);
 
 router
   .route('/:id')

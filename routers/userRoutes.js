@@ -1,4 +1,5 @@
 import express from 'express';
+import multer from 'multer';
 import {
   resetPassword,
   signUp,
@@ -17,9 +18,11 @@ import {
   updateMe,
   deleteMe,
 } from '../controllers/userController.js';
-import { upload, resizeUserPhoto } from '../middleware/fileUploadMiddleware.js';
 import { protect, restrictTo } from '../middleware/authMiddleware.js';
 import { setUserId } from '../middleware/userMiddleware.js';
+
+// we have to define the destination where we want to save our image.
+const upload = multer({ dest: 'public/img/users' });
 
 const router = express.Router();
 
@@ -35,7 +38,10 @@ router.use(protect);
 
 router.get('/me', setUserId, getAUser);
 router.patch('/updateMyPassword', updatePassword);
-router.patch('/updateMe', upload.single('photo'), resizeUserPhoto, updateMe); // photo Upload Middleware configured
+
+// Here we have to upload single image that's why we use single function and in that we have to pass the field Name which have the file
+// in our request we will get one field file in there all the detail of image will be there (req.file)
+router.patch('/updateMe', upload.single('photo'), updateMe);
 router.delete('/deleteMe', deleteMe);
 
 router.use(restrictTo('admin'));
