@@ -21,9 +21,6 @@ const deleteAUser = deleteOne(User);
 
 // THis is for updating user detail by user
 const updateMe = catchAsync(async (req, res, next) => {
-  console.log(req.file);
-  console.log(req.body);
-
   // 1. Create error if user POSTS password Data
   if (req.body.password || req.body.ConfirmPassword) {
     return next(
@@ -36,6 +33,7 @@ const updateMe = catchAsync(async (req, res, next) => {
 
   // 2. Update user documents
   const filterBody = filterObj(req.body, 'name', 'email');
+  if (req.file) filterBody.photo = req.file.filename;
 
   // In options we set new true adn runValidators true , new options true means it will return new object as response so that we can send it in response
 
