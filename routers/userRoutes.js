@@ -1,5 +1,4 @@
 import express from 'express';
-import multer from 'multer';
 import {
   resetPassword,
   signUp,
@@ -19,10 +18,7 @@ import {
   deleteMe,
 } from '../controllers/userController.js';
 import { protect, restrictTo } from '../middleware/authMiddleware.js';
-import { setUserId } from '../middleware/userMiddleware.js';
-
-// we have to define the destination where we want to save our image.
-const upload = multer({ dest: 'public/img/users' });
+import { setUserId, upload } from '../middleware/userMiddleware.js';
 
 const router = express.Router();
 
