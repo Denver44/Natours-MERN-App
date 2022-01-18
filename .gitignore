@@ -2,3 +2,4 @@ node_modules
 dev-data
 .env.local
 .env.prod
+.cache

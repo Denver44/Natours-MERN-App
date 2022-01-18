@@ -1,4 +1,5 @@
 import multer from 'multer';
+// eslint-disable-next-line no-unused-vars
 import sharp from 'sharp';
 import AppError from '../utils/AppError.js';
 
