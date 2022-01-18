@@ -6,6 +6,7 @@ import helmet from 'helmet';
 import mongoSanitize from 'express-mongo-sanitize';
 import xss from 'xss-clean';
 import hpp from 'hpp';
+import cookieParser from 'cookie-parser';
 
 import AppError from './utils/AppError.js';
 import {
@@ -31,7 +32,17 @@ app.set('views', path.join(__dirname, 'views')); // We have set the path of view
 // 1. GLOBAL  MIDDLEWARE
 
 // Set Security http Headers
-app.use(helmet());
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'", 'https:', 'http:', 'data:', 'ws:'],
+      baseUri: ["'self'"],
+      fontSrc: ["'self'", 'https:', 'http:', 'data:'],
+      scriptSrc: ["'self'", 'https:', 'http:', 'blob:'],
+      styleSrc: ["'self'", 'https:', 'http:', 'unsafe-inline'],
+    },
+  })
+);
 
 // Development Logging
 if (process.env.NODE_ENV === 'development') {
@@ -50,8 +61,12 @@ const limiter = rateLimit({
 // This limiter will only affect the route with /api and we can set different limiter for different route
 app.use('/api', limiter);
 
-// Body parser reading data from body into req.body, Here we have limited the body data to 10KB
-app.use(express.json({ limit: '10kb' }));
+// Body parser reading data from body into req.body
+app.use(express.json({ limit: '10kb' })); /// Parse data from req.body and the limit is set to 10KB.
+
+app.use(express.urlencoded({ extended: true, limit: '10kb' })); // Here we use this because we want to parse data coming from, form which encoded and that is also known as urlencoded
+
+app.use(cookieParser()); // This will parse the data from cookie
 
 // Mongo Sanitize, It will remove all the dollar sign from the req.body so that the query don't work
 app.use(mongoSanitize());
@@ -76,6 +91,7 @@ app.use(
 // Test Middleware
 app.use((req, res, next) => {
   req.requestedTime = new Date().toISOString();
+  console.log('Cookie ', req?.cookies);
   next();
 });
 

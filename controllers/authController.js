@@ -144,12 +144,22 @@ const resetPassword = catchAsync(async (req, res, next) => {
 });
 
 const updatePassword = catchAsync(async (req, res, next) => {
+  // console.log('REQ FOR PASS ', req.user);
   // Get user from collection
   const user = await User.findById(req.user.id).select('+password');
+  // console.log('user ', user);
 
   // Check if posted current password is correct
-  if (!(await user.correctPassword(req.body.currentPassword, user.password)))
+
+  if (
+    !(await user.correctPassword(
+      req.body.passwordCurrent || req.body.currentPassword,
+      user.password
+    ))
+  ) {
+    console.log('FROM INNER');
     return next(new AppError('Your current password is wrong ', 401));
+  }
 
   // If so, update Password
   user.password = req.body.password;
@@ -160,4 +170,16 @@ const updatePassword = catchAsync(async (req, res, next) => {
   return createSendToken(user, 200, res);
 });
 
-export { signUp, login, forgotPassword, resetPassword, updatePassword };
+const logOut = (req, res) => {
+  // Dummy cookie created
+  res.cookie('jwt', 'loggedOut', {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  });
+
+  res.status(200).json({
+    status: 'success',
+  });
+};
+
+export { signUp, login, logOut, forgotPassword, resetPassword, updatePassword };

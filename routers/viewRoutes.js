@@ -1,11 +1,19 @@
 import express from 'express';
-import { getTour, getOverview } from '../controllers/viewController.js';
+import {
+  getTour,
+  getOverview,
+  getLoginForm,
+  getAccount,
+} from '../controllers/viewController.js';
+import { checkLoggedIn, protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.get('/', getOverview);
+// We pu this checkLoggedIn in all the route
 
-// Adding slug like is using (:) is called URL Parameters
-router.get('/tour/:slug', getTour);
+router.get('/', checkLoggedIn, getOverview);
+router.get('/tour/:slug', checkLoggedIn, getTour); // Adding slug like is using (:) is called URL Parameters
+router.get('/login', checkLoggedIn, getLoginForm);
+router.get('/me', protect, getAccount);
 
 export default router;

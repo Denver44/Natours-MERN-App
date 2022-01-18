@@ -7,6 +7,7 @@ import { bookTour } from './stripe';
 import { showAlert } from './alerts';
 
 // DOM ELEMENTS
+// Here we wrote like this so that we don't get error when we go login page then we don't get error of map dataset is not found like that so first we check if it there then only we will get data or use event listener on them.
 const mapBox = document.getElementById('map');
 const loginForm = document.querySelector('.form--login');
 const logOutBtn = document.querySelector('.nav__el--logout');
