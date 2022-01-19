@@ -14,6 +14,7 @@ import {
   userRouter,
   reviewRouter,
   viewRouter,
+  bookingRouter,
 } from './routers/route.js';
 import GlobalErrorHandling from './controllers/errorController.js';
 
@@ -101,6 +102,7 @@ app.use('/', viewRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
+app.use('/api/v1/booking', bookingRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server`, 404));
