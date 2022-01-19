@@ -1,3 +1,4 @@
+import path from 'path';
 import nodemailer from 'nodemailer';
 import pug from 'pug';
 import htmlToText from 'html-to-text';
@@ -5,6 +6,8 @@ import htmlToText from 'html-to-text';
 // Here we are creating a email class
 // This class is robust we can send welcome email or forgot password email
 // TO send mail we need to thing user to whom we send email and the URL like for forget password we want to send the reset password link
+
+const __dirname = path.resolve(path.dirname(''));
 
 class Email {
   constructor(user, url) {
@@ -33,9 +36,9 @@ class Email {
   // This will send the actual email
   async send(template, subject) {
     // 1 Render the HTML Based on a PUG template
-    const html = pug.renderFile(`${__dirname}/../views/email/${template}.pug`, {
+    const html = pug.renderFile(`${__dirname}/views/email/${template}.pug`, {
       firstName: this.firstName,
-      utl: this.url,
+      url: this.url, // FIX THIS NOT REDIRECTING TO URL WHEN CLICKING ON BUTTON
       subject,
     });
 
@@ -55,7 +58,7 @@ class Email {
   async sendWelcome() {
     // This template is the name of our template which we will send
     // The subject which we want to send with that
-    await this.send('Welcome', 'Welcome to the Natours Family');
+    await this.send('welcome', 'Welcome to the Natours Family');
   }
 }
 
