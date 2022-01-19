@@ -21,7 +21,13 @@ class Email {
   newTransport() {
     if (process.env.NODE_ENV === 'production') {
       // Send Grid
-      return 1;
+      return nodemailer.createTransport({
+        service: 'SendGrid',
+        auth: {
+          user: process.env.EMAIL_USERNAME,
+          pass: process.env.EMAIL_PASSWORD,
+        },
+      });
     }
     return nodemailer.createTransport({
       host: process.env.EMAIL_HOST,
@@ -59,6 +65,13 @@ class Email {
     // This template is the name of our template which we will send
     // The subject which we want to send with that
     await this.send('welcome', 'Welcome to the Natours Family');
+  }
+
+  async sendPasswordReset() {
+    await this.send(
+      'passwordReset',
+      'Your password reset link (valid for only 10 minutes)'
+    );
   }
 }
 

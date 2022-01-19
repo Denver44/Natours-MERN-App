@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "nodemon -r dotenv/config server.js dotenv_config_path=.env.local",
-    "start:prod": "nodemon -r dotenv/config server.js server.js dotenv_config_path=.env.prod",
+    "start:prod": "nodemon -r dotenv/config server.js server.js dotenv_config_path=.env.production",
     "import": "node -r dotenv/config  seeding/import-dev-data.js dotenv_config_path=.env.local import",
     "flush": "node -r dotenv/config  seeding/import-dev-data.js dotenv_config_path=.env.local delete",
     "check-lint": "eslint --fix --ext .js .",
