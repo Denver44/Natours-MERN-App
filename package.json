@@ -1,7 +1,7 @@
 {
-  "name": "travel-space",
+  "name": "natours",
   "version": "1.0.0",
-  "description": "",
+  "description": "Natours is a personal project, which i build by learning from a udemy course and this repo contains the full code of natours app and it is built using express, pug template and node and the database is used for this project is mongodb",
   "main": "app.js",
   "type": "module",
   "scripts": {
