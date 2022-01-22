@@ -100,11 +100,11 @@ userSchema.methods.createPasswordResetToken = function () {
 
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10 Minutes && this 10*60*1000 = 60000 MilliSeconds
 
-  console.log(
-    { resetToken },
-    this.passwordResetToken,
-    this.passwordResetExpires
-  );
+  // console.log(
+  //   { resetToken },
+  //   this.passwordResetToken,
+  //   this.passwordResetExpires
+  // );
 
   return resetToken; // As we will send the un encrypted Token to user via email and then we compare it to check it is valid or not.
 };

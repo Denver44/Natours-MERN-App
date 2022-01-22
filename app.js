@@ -7,6 +7,7 @@ import mongoSanitize from 'express-mongo-sanitize';
 import xss from 'xss-clean';
 import hpp from 'hpp';
 import cookieParser from 'cookie-parser';
+import compression from 'compression';
 
 import AppError from './utils/AppError.js';
 import {
@@ -88,6 +89,9 @@ app.use(
     ],
   })
 );
+
+// This is compression it will compress all the text and json
+app.use(compression);
 
 // Test Middleware
 app.use((req, res, next) => {
