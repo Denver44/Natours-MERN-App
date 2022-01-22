@@ -3,6 +3,7 @@ import Tour from '../models/tourModel.js';
 import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/AppError.js';
 import User from '../models/userModel.js';
+import Booking from '../models/bookingModel.js';
 
 const getOverview = catchAsync(async (req, res, next) => {
   // 1) Get Tour data from collection
@@ -62,4 +63,22 @@ const updateUserData = catchAsync(async (req, res, next) => {
   });
 });
 
-export { getTour, getOverview, getLoginForm, getAccount, updateUserData };
+const getMyTours = catchAsync(async (req, res, next) => {
+  const bookings = await Booking.find({ user: req.user.id });
+  const tourId = bookings.map((tour) => tour.tour._id);
+  const tours = await Tour.find({ _id: { $in: tourId } }); // As it is array and we have to find all the tour which are in the tourId so we have to sue $in operator.
+
+  res.status(200).render('overview', {
+    title: 'My tours',
+    tours,
+  });
+});
+
+export {
+  getTour,
+  getOverview,
+  getLoginForm,
+  getAccount,
+  updateUserData,
+  getMyTours,
+};
