@@ -1,7 +1,10 @@
 {
   "name": "natours",
-  "version": "1.0.0",
   "description": "Natours is a personal project, which i build by learning from a udemy course and this repo contains the full code of natours app and it is built using express, pug template and node and the database is used for this project is mongodb",
+  "author": "denver",
+  "version": "1.0.0",
+  "license": "ISC",
+  "keywords": [],
   "main": "app.js",
   "type": "module",
   "scripts": {
@@ -18,9 +21,6 @@
     "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/build --out-file bundle.js",
     "build:js": "parcel build ./public/js/index.js --out-dir ./public/build --out-file bundle.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
     "@babel/polyfill": "^7.12.1",
     "axios": "^0.24.0",
