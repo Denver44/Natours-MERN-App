@@ -91,7 +91,7 @@ app.use(
 );
 
 // This is compression it will compress all the text and json
-app.use(compression);
+app.use(compression());
 
 // Test Middleware
 app.use((req, res, next) => {
