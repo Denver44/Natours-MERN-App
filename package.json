@@ -5,8 +5,9 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon -r dotenv/config server.js dotenv_config_path=.env.local",
+    "start": "node server.js",
     "start:prod": "nodemon -r dotenv/config server.js server.js dotenv_config_path=.env.production",
+    "start:dev": "nodemon -r dotenv/config server.js dotenv_config_path=.env.local",
     "import": "node -r dotenv/config  seeding/import-dev-data.js dotenv_config_path=.env.local import",
     "flush": "node -r dotenv/config  seeding/import-dev-data.js dotenv_config_path=.env.local delete",
     "check-lint": "eslint --fix --ext .js .",
@@ -25,6 +26,7 @@
     "@babel/polyfill": "^7.12.1",
     "axios": "^0.24.0",
     "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "dotenv": "^10.0.0",
     "express": "^4.17.2",
@@ -55,5 +57,8 @@
     "husky": "^7.0.0",
     "parcel-bundler": "^1.12.3",
     "prettier": "^2.5.1"
+  },
+  "engines": {
+    "node ": ">=14.0.0"
   }
 }

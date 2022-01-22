@@ -168,12 +168,12 @@ tourSchema.pre(/^find/, function (next) {
   next();
 });
 
-tourSchema.post(/^find/, function (doc, next) {
-  // in doc We actually get the document for the pre and post hooks
-  // console.log(doc);
-  console.log(`Total time it take to do query ${Date.now() - this.start} ms`);
-  next();
-});
+// tourSchema.post(/^find/, (doc, next) => {
+// in doc We actually get the document for the pre and post hooks
+//    console.log(doc);
+//    console.log(`Total time it take to do query ${Date.now() - this.start} ms`);
+//   next();
+// });
 
 //  AGGREGATION MIDDLEWARE
 tourSchema.pre('aggregate', function (next) {

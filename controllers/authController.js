@@ -153,7 +153,7 @@ const updatePassword = catchAsync(async (req, res, next) => {
       user.password
     ))
   ) {
-    console.log('FROM INNER');
+    // console.log('FROM INNER');
     return next(new AppError('Your current password is wrong ', 401));
   }
 

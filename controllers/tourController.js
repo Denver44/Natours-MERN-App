@@ -121,7 +121,6 @@ const getToursWithIn = catchAsync(async (req, res, next) => {
     statLocation: { $geoWithin: { $centerSphere: [[lng, lat], radius] } },
   });
 
-  console.log('tours', tours);
   res.status(200).json({
     stats: 'success',
     result: tours.length,
