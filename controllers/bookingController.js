@@ -2,11 +2,12 @@ import Stripe from 'stripe';
 import AppError from '../utils/AppError.js';
 import catchAsync from '../utils/catchAsync.js';
 import Tour from '../models/tourModel.js';
+import Booking from '../models/bookingModel.js';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const getCheckoutSession = catchAsync(async (req, res, next) => {
-  //  Get Tour from req.params.toudId
+  //  Get Tour from req.params.tourId
   const tour = await Tour.findById(req.params.tourId);
 
   if (!tour) return next(new AppError('No Tour found', 404));
@@ -19,7 +20,10 @@ const getCheckoutSession = catchAsync(async (req, res, next) => {
     // to manage payment methods in the Dashboard
     // payment_method_types: ['card'], // https://stripe.com/docs/payments/dashboard-payment-methods
     mode: 'payment',
-    success_url: `${req.protocol}://${req.get('host')}/`,
+    // success_url: `${req.protocol}://${req.get('host')}/`,
+    success_url: `${req.protocol}://${req.get('host')}/?tour=${
+      req.params.tourId
+    }&user=${req.user.id}&price=${tour.price}`,
     cancel_url: `${req.protocol}://${req.get('host')}/tour/${tour.slug}`,
     customer_email: req.user.email,
     client_reference_id: req.params.tourId,
@@ -41,5 +45,18 @@ const getCheckoutSession = catchAsync(async (req, res, next) => {
   });
 });
 
+const createBookingCheckout = catchAsync(async (req, res, next) => {
+  const { tour, user, price } = req.query;
+  if (!tour || !user || !price) return next(); // Here we got to next middleware which is the / home page of our app in view because we want to show the homepage after booking that;s hwy
+  await Booking.create({ tour, user, price });
+  return res.redirect(req.originalUrl.split('?')[0]);
+});
+
 // eslint-disable-next-line import/prefer-default-export
-export { getCheckoutSession };
+export { getCheckoutSession, createBookingCheckout };
+
+// When a website is deployed on a server we will get access of the session oject once the purchase is completed using stripe WebHooks
+
+// Webhooks is a perfect for creating saving bookings in db.
+
+// Right now we are doing temp fix which is not at all secure by this anyone can book a tour.

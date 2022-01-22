@@ -1,4 +1,5 @@
 import express from 'express';
+import { createBookingCheckout } from '../controllers/bookingController.js';
 import {
   getTour,
   getOverview,
@@ -11,7 +12,7 @@ const router = express.Router();
 
 // We pu this checkLoggedIn in all the route
 
-router.get('/', checkLoggedIn, getOverview);
+router.get('/', createBookingCheckout, checkLoggedIn, getOverview);
 router.get('/tour/:slug', checkLoggedIn, getTour); // Adding slug like is using (:) is called URL Parameters
 router.get('/login', checkLoggedIn, getLoginForm);
 router.get('/me', protect, getAccount);
