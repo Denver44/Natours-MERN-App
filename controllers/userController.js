@@ -33,6 +33,7 @@ const updateMe = catchAsync(async (req, res, next) => {
 
   // 2. Update user documents
   const filterBody = filterObj(req.body, 'name', 'email');
+  if (req.file) filterBody.photo = req.file.filename;
 
   // In options we set new true adn runValidators true , new options true means it will return new object as response so that we can send it in response
 

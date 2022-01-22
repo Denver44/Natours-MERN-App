@@ -6,10 +6,10 @@ export const displayMap = locations => {
   var map = new mapboxgl.Map({
     container: 'map',
     style: 'mapbox://styles/jonasschmedtmann/cjvi9q8jd04mi1cpgmg7ev3dy',
-    scrollZoom: false
+    scrollZoom: false // Zoom off
     // center: [-118.113491, 34.111745],
     // zoom: 10,
-    // interactive: false
+    // interactive: false // Then map will be like image
   });
 
   const bounds = new mapboxgl.LngLatBounds();

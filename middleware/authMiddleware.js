@@ -12,6 +12,9 @@ const protect = catchAsync(async (req, res, next) => {
     req.headers.authorization.startsWith('Bearer')
   ) {
     token = req.headers.authorization.split(' ')[1];
+  } else if (req.cookies.jwt) {
+    // Here no we can authorize via cookie also not only authorizations headers.
+    token = req.cookies.jwt;
   }
 
   if (!token) {
@@ -23,8 +26,8 @@ const protect = catchAsync(async (req, res, next) => {
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
   // 3. Check if user still exists
-  const freshUser = await User.findById(decoded.id);
-  if (!freshUser) {
+  const currentUser = await User.findById(decoded.id);
+  if (!currentUser) {
     return next(
       new AppError(
         'The user belonging to this token does not longer exist ',
@@ -34,13 +37,15 @@ const protect = catchAsync(async (req, res, next) => {
   }
 
   // 4. Check if user changed password after the token was issued
-  if (freshUser.changePasswordAfter(decoded.iat)) {
+  if (currentUser.changePasswordAfter(decoded.iat)) {
     return next(
       new AppError('User recently change password! Please login again ', 401)
     );
   }
   // GRANT ACCESS TO PROTECTED ROUTE
-  req.user = freshUser;
+
+  req.user = currentUser;
+  res.locals.user = currentUser;
   return next();
 });
 
@@ -57,4 +62,33 @@ const restrictTo =
     return next();
   };
 
-export { restrictTo, protect };
+// This middleware is only for checking that user is logged in or not for frontend
+// If yes then in response we have set a locals variables in that we will set the user details in that.
+// If not logged in no locals variables will be there
+// if no one of next middleware called in if condition then only we locals variables else we don't have as next will call th next middleware directly.
+const checkLoggedIn = async (req, res, next) => {
+  if (req.cookies.jwt) {
+    try {
+      const decoded = await promisify(jwt.verify)(
+        req.cookies.jwt,
+        process.env.JWT_SECRET
+      );
+
+      const currentUser = await User.findById(decoded.id);
+      if (!currentUser) return next();
+
+      if (currentUser.changePasswordAfter(decoded.iat)) return next();
+
+      // In our template we will get the access of locals there in res
+      res.locals.user = currentUser;
+      return next();
+    } catch (error) {
+      return next();
+    }
+  }
+
+  return next();
+  // No cookie then we will not put the LoggedUser Details in locals so no  user detail will be shown up
+};
+
+export { restrictTo, protect, checkLoggedIn };

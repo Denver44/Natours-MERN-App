@@ -12,9 +12,31 @@ import {
 } from '../controllers/tourController.js';
 import reviewRouter from './reviewRoutes.js';
 import { protect, restrictTo } from '../middleware/authMiddleware.js';
-import { aliasTopTours } from '../middleware/tourMiddleware.js';
+import {
+  aliasTopTours,
+  resizeTourImages,
+  upload,
+} from '../middleware/tourMiddleware.js';
 
 const router = express.Router();
+
+// IF we have to upload just one image then we have to use single function
+// upload.single('imageCover')
+// If we have to upload multiple photo for one field then we have to use array function of upload
+// upload.array('images',5)
+
+// When there is a mix fro single and multiple filed then we use fields and in that we pass array of object in that we mention the key and maxCOunt of photo.
+const uploadTourImages = upload.fields([
+  {
+    name: 'imageCover',
+    maxCount: 1,
+  },
+  {
+    name: 'images',
+    maxCount: 3,
+  },
+]);
+
 // router.param('id');
 
 router.use('/:tourId/reviews', reviewRouter);
@@ -42,7 +64,13 @@ router
 router
   .route('/:id')
   .get(getATour)
-  .patch(protect, restrictTo('admin', 'lead-guide'), updateATour)
+  .patch(
+    protect,
+    restrictTo('admin', 'lead-guide'),
+    uploadTourImages,
+    resizeTourImages,
+    updateATour
+  )
   .delete(protect, restrictTo('admin', 'lead-guide'), deleteATour);
 
 export default router;
