@@ -8,6 +8,7 @@ import xss from 'xss-clean';
 import hpp from 'hpp';
 import cookieParser from 'cookie-parser';
 import compression from 'compression';
+import cors from 'cors';
 
 import AppError from './utils/AppError.js';
 import {
@@ -21,6 +22,25 @@ import GlobalErrorHandling from './controllers/errorController.js';
 
 const app = express();
 const __dirname = path.resolve(path.dirname(''));
+
+// Implement CORS
+app.use(cors());
+// Access-Control-Allow-Origin *
+
+// If we want to allow request for cross origin for a specific point like
+// API : natours.api.com   WEBAPP : natours.com
+// Then we can do this so only this URL https://www.natours.com is able to make request to our api.
+// app.use(
+//   cors({
+//     origin: 'https://www.natours.com',
+//   })
+// );
+
+// Allow all
+app.options('*', cors());
+
+// Here we can allow request for only specific URL, like for this URL option request for delete, put is allow. that means u can delete or update data for this route only
+// app.options('/api/v1/tours/:id', cors());
 
 // To trust proxy we have to enable this and heroku work as proxy
 app.enable('trust proxy');
@@ -120,3 +140,13 @@ app.use(GlobalErrorHandling);
 export default app;
 
 // For serving static files in public folder => http://localhost:5000/ + fileName
+
+// IMPORTANT NOTE:-
+
+// app.use(cors()) this will only work for simple request like get,post
+
+// non-simple request like put,patch, delete or request which send cookies or non-standard headers we have to configure cors for that.
+
+// The non-simple request require pre-flight phase.
+// Like whenever we do no simple request like delete request so the browser will send first options request to check it is safe or not, that means for developer we need to respond that options request and options is just a http method like get, post.
+// So basically whenever we get a options request we have to send back the same access allow origin header, so this way browser will know that the actual request in case here delete request is safe to perform.
