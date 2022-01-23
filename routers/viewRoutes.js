@@ -7,10 +7,12 @@ import {
   getAccount,
   getMyTours,
 } from '../controllers/viewController.js';
+import alertMiddleware from '../middleware/alertMiddleware.js';
 import { checkLoggedIn, protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
+router.use(alertMiddleware);
 // We pu this checkLoggedIn in all the route
 
 router.get('/', checkLoggedIn, getOverview);
