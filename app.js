@@ -93,6 +93,9 @@ app.post(
   webHookCheckout
 );
 
+// STRIPE DEVELOPMENT TESTING
+// app.post('/', express.raw({ type: 'application/json' }), webHookCheckout);
+
 // Body parser reading data from body into req.body
 app.use(express.json({ limit: '10kb' })); /// Parse data from req.body and the limit is set to 10KB.
 
