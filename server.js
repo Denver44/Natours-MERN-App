@@ -37,6 +37,16 @@ const server = app.listen(PORT, () => {
 // No we can handled any  unhandledRejection Globally entire this whole applications
 process.on('unhandledRejection', (err) => {
   console.log(err.name, err.message);
-  console.log('UNHANDLED REJECTION! 💥 Shutting Down...');
+  console.log('💥 UNHANDLED REJECTION! 💻 Shutting down...');
   server.close(() => process.exit(1));
 });
+
+process.on('SIGTERM', () => {
+  console.log('💥 SIGTERM RECEIVED 💻 Shutting down gracefully');
+  server.close(() => {
+    console.log('💥 Process terminated');
+  });
+});
+
+// SIGTERM is a signal is used to cause a program to really stop running but in a polite way
+// Heroku will shut down our app after every 24hr
