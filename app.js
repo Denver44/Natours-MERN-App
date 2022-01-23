@@ -22,8 +22,10 @@ import GlobalErrorHandling from './controllers/errorController.js';
 const app = express();
 const __dirname = path.resolve(path.dirname(''));
 
-//  Serving Static files
+// To trust proxy we have to enable this and heroku work as proxy
+app.enable('trust proxy');
 
+//  Serving Static files
 app.use(express.static(path.join(__dirname, 'public'))); // Now we don't need to put the slashes and to view the pages in public folder : http://localhost:PORT/fileName.ext => http://localhost:PORT/index.html
 
 // Setting the Template Engine

@@ -11,7 +11,7 @@ const createJWTToken = (id) =>
     expiresIn: process.env.JWT_EXPIRES_IN,
   });
 
-const createSendToken = (user, statusCode, res) => {
+const createSendToken = (user, statusCode, req, res) => {
   const token = createJWTToken(user._id);
 
   const cookieOptions = {
@@ -19,11 +19,18 @@ const createSendToken = (user, statusCode, res) => {
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 60 * 60 * 1000
     ),
     httpOnly: true, // THis will make sure that cookie is not accessed or modified in any way by the browser
+    secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
+    // In express we have req.secure property and if the connection is secure then only req.secure is set true.
+
+    // This heroku specific
+    // The req.secure will not work as in heroku , heroku proxy's is basically redirect or modified all incoming requests so we have to check that x-forwarded-proto is https or not.
+
+    // As in production it si not necessary that all app are secure.
   };
 
-  if (process.env.NODE_ENV === 'production') {
-    cookieOptions.secure = true; // It will only send if there is a https connection
-  }
+  // if (process.env.NODE_ENV === 'production') {
+  //   cookieOptions.secure = true; // It will only send if there is a https connection
+  // }
 
   res.cookie('jwt', token, cookieOptions);
 
@@ -57,7 +64,7 @@ const signUp = catchAsync(async (req, res, next) => {
   });
   const url = `${req.protocol}://${req.get('host')}/me`;
   await new Email(newUser, url).sendWelcome();
-  createSendToken(newUser, 201, res);
+  createSendToken(newUser, 201, req, res);
 });
 
 const login = catchAsync(async (req, res, next) => {
@@ -71,7 +78,7 @@ const login = catchAsync(async (req, res, next) => {
   if (!user || !(await user.correctPassword(password, user.password)))
     return next(new AppError('Incorrect email or password', 401));
 
-  return createSendToken(user, 200, res);
+  return createSendToken(user, 200, req, res);
 });
 
 const forgotPassword = catchAsync(async (req, res, next) => {
@@ -136,7 +143,7 @@ const resetPassword = catchAsync(async (req, res, next) => {
   await user.save(); // THis time we want to validate conform password and password are same
 
   // 4 Log in the user in , Send JWT
-  return createSendToken(user, 200, res);
+  return createSendToken(user, 200, req, res);
 });
 
 const updatePassword = catchAsync(async (req, res, next) => {
@@ -163,7 +170,7 @@ const updatePassword = catchAsync(async (req, res, next) => {
   await user.save();
 
   // Log user in, send JWT
-  return createSendToken(user, 200, res);
+  return createSendToken(user, 200, req, res);
 });
 
 const logOut = (req, res) => {
