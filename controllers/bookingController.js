@@ -34,7 +34,7 @@ const getCheckoutSession = catchAsync(async (req, res, next) => {
     // to manage payment methods in the Dashboard
     // payment_method_types: ['card'], // https://stripe.com/docs/payments/dashboard-payment-methods
     mode: 'payment',
-    success_url: `${req.protocol}://${req.get('host')}/my-tours`,
+    success_url: `${req.protocol}://${req.get('host')}/my-tours?alert=booking`,
     // success_url: `${req.protocol}://${req.get('host')}/?tour=${
     //   req.params.tourId
     // }&user=${req.user.id}&price=${tour.price}`,
@@ -76,10 +76,9 @@ const createBookingCheckout = async (session) => {
 };
 
 // eslint-disable-next-line no-unused-vars
-const webHookCheckout = catchAsync(async (req, res, next) => {
+const webHookCheckout = (req, res, next) => {
   const signature = req.headers['stripe-signature'];
 
-  // body should be in raw from
   let event;
   try {
     event = stripe.webhooks.constructEvent(
@@ -98,7 +97,7 @@ const webHookCheckout = catchAsync(async (req, res, next) => {
   return res.status(200).json({
     received: true,
   });
-});
+};
 
 export {
   getCheckoutSession,
