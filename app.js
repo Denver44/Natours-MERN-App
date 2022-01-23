@@ -19,6 +19,7 @@ import {
   bookingRouter,
 } from './routers/route.js';
 import GlobalErrorHandling from './controllers/errorController.js';
+import { webHookCheckout } from './controllers/bookingController.js';
 
 const app = express();
 const __dirname = path.resolve(path.dirname(''));
@@ -84,6 +85,13 @@ const limiter = rateLimit({
 
 // This limiter will only affect the route with /api and we can set different limiter for different route
 app.use('/api', limiter);
+
+// We need Raw data for web hooks to work
+app.post(
+  '/webhook-checkout',
+  express.raw({ type: 'application/json' }),
+  webHookCheckout
+);
 
 // Body parser reading data from body into req.body
 app.use(express.json({ limit: '10kb' })); /// Parse data from req.body and the limit is set to 10KB.
