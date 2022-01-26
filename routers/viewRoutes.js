@@ -4,6 +4,7 @@ import {
   getTour,
   getOverview,
   getLoginForm,
+  getSignUpForm,
   getAccount,
   getMyTours,
 } from '../controllers/viewController.js';
@@ -20,5 +21,6 @@ router.get('/tour/:slug', checkLoggedIn, getTour); // Adding slug like is using 
 router.get('/login', checkLoggedIn, getLoginForm);
 router.get('/me', protect, getAccount);
 router.get('/my-tours', protect, getMyTours);
+router.get('/signUp', getSignUpForm);
 
 export default router;
