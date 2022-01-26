@@ -5,11 +5,13 @@ import { login, logout } from './login';
 import { updateSettings } from './updateSettings';
 import { bookTour } from './stripe';
 import { showAlert } from './alerts';
+import { signUp } from './signup';
 
 // DOM ELEMENTS
 // Here we wrote like this so that we don't get error when we go login page then we don't get error of map dataset is not found like that so first we check if it there then only we will get data or use event listener on them.
 const mapBox = document.getElementById('map');
 const loginForm = document.querySelector('.form--login');
+const signUpForm = document.querySelector('.form--signUp');
 const logOutBtn = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-password');
@@ -29,6 +31,19 @@ if (loginForm)
     login(email, password);
   });
 
+
+if (signUpForm){
+
+  console.log("HELLO ");
+  signUpForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const passwordConfirm = document.getElementById('passwordConfirm').value;
+    signUp(name,email, password, passwordConfirm);
+  });
+}
 if (logOutBtn) logOutBtn.addEventListener('click', logout);
 
 if (userDataForm)

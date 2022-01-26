@@ -39,6 +39,11 @@ const getLoginForm = (req, res) =>
     title: `Login into your account`,
   });
 
+const getSignUpForm = (req, res) =>
+  res.status(200).render('signup', {
+    title: `Create your account`,
+  });
+
 const getAccount = (req, res) =>
   res.status(200).render('account', {
     title: `Your account`,
@@ -81,4 +86,5 @@ export {
   getAccount,
   updateUserData,
   getMyTours,
+  getSignUpForm,
 };
