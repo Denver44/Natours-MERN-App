@@ -16,8 +16,8 @@
     "prepare": "husky install",
     "pre-commit": "yarn check-format && yarn fix-format && yarn check-lint && git add -A .",
     "debug": "ndb server.js",
-    "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/build --out-file bundle.js",
-    "build:js": "parcel build ./public/js/index.js --out-dir ./public/build --out-file bundle.js"
+    "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/build --out-file bundle.js --public-url .",
+    "build:js": "parcel build ./public/js/index.js --out-dir ./public/build --out-file bundle.js --public-url ."
   },
   "keywords": [],
   "author": "",
