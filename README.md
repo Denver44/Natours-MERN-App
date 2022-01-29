@@ -45,23 +45,23 @@ Live demo (Feel free to visit) 👉 : https://natours-website-app.herokuapp.com/
 
 #### Tour Details :
 
-![tourOverviewonline-video-cutterc](https://github.com/Denver44/Natours-MERN-App/blob/main/public/video/Natours-Booking-a-tour.gif?raw=true)
+![paymentprocess-1-ycnhrceamp4-7fW](https://github.com/Denver44/Natours-MERN-App/blob/main/public/video/Natours-exploring-a-tour.gif?raw=true)
 
 #### Payment Process :
 
-![paymentprocess-1-ycnhrceamp4-7fW](https://github.com/Denver44/Natours-MERN-App/blob/main/public/video/Natours-exploring-a-tour.gif?raw=true)
+![tourOverviewonline-video-cutterc](https://github.com/Denver44/Natours-MERN-App/blob/main/public/video/Natours-Booking-a-tour.gif?raw=true)
 
 #### Booked Tours :
 
-![rsz_bookedtours](https://github.com/Denver44/Natours-MERN-App/blob/main/public/img/screenshots/Natours%20_User-booked-tours.png?raw=true)
+<img src="https://github.com/Denver44/Natours-MERN-App/blob/main/public/img/screenshots/Natours%20_User-booked-tours.png?raw=true" width="450" height="450" alt="admin_profile" />
 
 #### User Profile :
 
-![rsz_userprofile](https://github.com/Denver44/Natours-MERN-App/blob/main/public/img/screenshots/Natours%20_%20Useraccount.png?raw=true)
+<img src="https://github.com/Denver44/Natours-MERN-App/blob/main/public/img/screenshots/Natours%20_%20Useraccount.png?raw=true" width="450" height="450" alt="admin_profile" />
 
 #### Admin Profile :
 
-![rsz_adminprofile](https://github.com/Denver44/Natours-MERN-App/blob/main/public/img/screenshots/Natours%20_%20Admin-account.png?raw=true)
+<img src="https://github.com/Denver44/Natours-MERN-App/blob/main/public/img/screenshots/Natours%20_%20Admin-account.png?raw=true" width="450" height="450" alt="admin_profile" />
 
 ## How To Use
 
