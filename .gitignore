@@ -3,4 +3,3 @@ dev-data
 .env.local
 .env.production
 .cache
-README.md
