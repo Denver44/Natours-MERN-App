@@ -24,15 +24,23 @@
 
 Live demo (Feel free to visit) 👉 : https://natours-website-app.herokuapp.com/
 
+Current Frontend build with NextJs demo (Feel free to visit) 👉 : https://natours-next-js.vercel.app/
+
 ## Key Features
 
-- Authentication and Authorization
-  - Login and logout
-- Tour
-  - Manage booking, check tours map, check user's reviews & rating
-- User profile
-  - Update username, photo, email, and password
-- Online Payment through Stripe
+1. Authentication and Authorization
+   - Login and logout
+2. Tour
+   - Manage booking
+   - check tours map
+   - check user's reviews
+   - check user's rating
+3. User profile
+   - Update username
+   - Update user profile photo
+   - Update email and password
+4. Online Payment
+   - Book tours by paying online through Stripe
 
 ## Demonstration
 
@@ -73,13 +81,14 @@ Live demo (Feel free to visit) 👉 : https://natours-website-app.herokuapp.com/
   - Card No. : 4242 4242 4242 4242
   - Expiry date: 02 / 22
   - CVV: 222
+  - Select USA For Country and Enter any address random xyz address
   ```
 - Finished!
 
 ### Manage your booking
 
-- Check the tour you have booked in "Manage Booking" page in your user settings. You'll be automatically redirected to this
-  page after you have completed the booking.
+- Check the tour you have booked in "Manage Booking" page in your user settings.
+- You'll be automatically redirected to Manage Booking page after you have completed the booking.
 
 ### Update your profile
 
@@ -98,6 +107,9 @@ Live demo (Feel free to visit) 👉 : https://natours-website-app.herokuapp.com/
 - [Postman](https://www.getpostman.com/) - API testing
 - [Mailtrap](https://mailtrap.io/) & [Sendgrid](https://sendgrid.com/) - Email delivery platform
 - [Heroku](https://www.heroku.com/) - Cloud platform
+- [Husky](https://typicode.github.io/husky/#/) - Husky improves commits
+- [Eslint](https://eslint.org/) - Help us to Find and fix problems in your JavaScript
+- [Prettier](https://prettier.io/) - Code formatter
 
 ## Installation
 
@@ -114,22 +126,34 @@ $ npm run start:prod (for production)
 $ npm run debug (for debug)
 ```
 
+## Future Updates
+
+1. Frontend
+
+   1. Build the frontend in NextJs framework.
+   2. Create whole frontend application in react functional component with typescript only.
+   3. Improve overall UX/UI and make it responsive
+   4. Show the most popular and viewed tour among travellers.
+   5. Allow user to add a review directly at the website after they have taken a tour
+
+2. Backend
+
+   1. confirm user email, login with refresh token, 2FA
+   2. Prevent duplicate bookings after user has booked that exact tour, implement favorite tours
+   3. Try to migrate the backend from javascript to typescript
+   4. Add cloudFront so that we can upload image there.
+
+3. Scalable & Deployment
+   1. Create CI/CD pipeline
+   2. Create a Docker Image
+   3. Deploy the backend on vercel.
+
+- Many More ! There's always room for improvement!
+
 ## Known Bugs
 
 Feel free to email me at denver.io@protonmail.com if you run into any issues or have questions, ideas or concerns.
 Please enjoy and feel free to share your opinion, constructive criticism, or comments about my work. Thank you! 🙂
-
-## Future Updates
-
-- Allow user to add a review directly at the website after they have taken a tour
-- Prevent duplicate bookings after user has booked that exact tour, implement favourite tours
-- confirm user email, login with refresh token, 2FA
-- Show the most popular and viewed tour among travellers.
-- Improve overall UX/UI
-- Build the frontend in NextJs framework.
-- Create CI/CD pipeline
-- Create a Dokcer Image
-- And More ! There's always room for improvement!
 
 ## Acknowledgement
 
