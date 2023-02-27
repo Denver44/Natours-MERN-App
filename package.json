@@ -1,12 +1,12 @@
 {
   "name": "natours",
   "version": "1.0.0",
-  "description": "Natours is a personal project, which i build by learning from a udemy course and this repo contains the full code of natours app and it is built using express, pug template and node and the database is used for this project is mongodb",
+  "description": "Natours is a personal project, built using Express, Pug, and Node.js, with MongoDB as the database.",
   "main": "app.js",
   "type": "module",
   "scripts": {
     "start": "node server.js",
-    "start:prod": "nodemon -r dotenv/config server.js server.js dotenv_config_path=.env.production",
+    "start:prod": "nodemon -r dotenv/config server.js dotenv_config_path=.env.production",
     "start:dev": "nodemon -r dotenv/config server.js dotenv_config_path=.env.local",
     "import": "node -r dotenv/config  seeding/import-dev-data.js dotenv_config_path=.env.local import",
     "flush": "node -r dotenv/config  seeding/import-dev-data.js dotenv_config_path=.env.local delete",
@@ -29,7 +29,7 @@
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
-    "dotenv": "^10.0.0",
+    "dotenv": "^16.0.3",
     "express": "^4.17.2",
     "express-mongo-sanitize": "^2.1.0",
     "express-rate-limit": "^6.1.0",
